@@ -1,0 +1,15 @@
+<!-- login.component.html -->
+<div class="login-shell">
+  <div class="login-card">
+    <h2 class="login-title">Login</h2>
+
+    <input class="login-field" [(ngModel)]="user" placeholder="Username" />
+    <input class="login-field" [(ngModel)]="pass" type="password" placeholder="Password" />
+
+    @if (error) {
+      <p class="login-error">Wrong credentials</p>
+    }
+
+    <button class="login-button" (click)="submit()">Sign in</button>
+  </div>
+</div>

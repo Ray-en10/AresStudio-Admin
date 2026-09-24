@@ -1,0 +1,107 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+:root {
+  --bg-start: #0f172a;
+  --bg-end: #111827;
+  --panel: rgba(15, 23, 42, 0.82);
+  --panel-border: rgba(148, 163, 184, 0.22);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-strong: #0ea5e9;
+  --error: #f87171;
+  --shadow: rgba(15, 23, 42, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: min(100%, 360px);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px var(--shadow);
+  padding: 28px 24px;
+  backdrop-filter: blur(12px);
+}
+
+.login-title {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.login-field {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.55);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-field::placeholder {
+  color: var(--muted);
+}
+
+.login-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(250, 203, 170);
+}
+
+.login-error {
+  margin: 10px 0 14px;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.login-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}

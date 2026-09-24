@@ -1,0 +1,64 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="img">
+        <img class="img" src="Areslog.jpg" alt="Logo" />
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <div class="nav-group">
+        <p class="nav-group-label">Dashboard</p>
+        <a class="nav-item active" routerLink="/dashboard" routerLinkActive="active">
+          <span class="nav-icon">◫</span>
+          <span>Dashboard</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <p class="nav-group-label">Pages</p>
+        <a class="nav-item" routerLink="/" routerLinkActive="active">
+          <span class="nav-icon">◌</span>
+          <span>Add Order</span>
+        </a>
+        <a class="nav-item" routerLink="/orders" routerLinkActive="active">
+          <span class="nav-icon">◌</span>
+          <span>Orders</span>
+        </a>
+  
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-group-label">Elements</p>
+        <a class="nav-item" routerLink="/" routerLinkActive="active">
+          <span class="nav-icon">◌</span>
+          <span>Ready In Stock</span>
+        </a>
+    
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+ 
+      <button class="logout-btn" type="button" (click)="logout()">Logout</button>
+    </div>
+  </aside>
+
+  <div class="main-panel">
+    <header class="topbar">
+      <div class="topbar__left">
+        <button class="icon-button" type="button" aria-label="Toggle menu">☰</button>
+        <label class="search-box" aria-label="Search">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Search here..." />
+        </label>
+      </div>
+
+      <div class="topbar__right">
+        <button class="icon-button soft" type="button" aria-label="Notifications">🔔</button>
+
+      </div>
+    </header>
+
+    <main class="content-area">
+      <router-outlet />
+    </main>
+  </div>
+</div>
