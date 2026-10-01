@@ -44,7 +44,7 @@
 .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .stat-card { min-height: 150px; padding: 17px; border-radius: 10px; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.045); }
 .stat-card--purple { background: linear-gradient(135deg, #197c70, #299385); color: #fff; }
-.stat-card--blue { background: linear-gradient(135deg, #d66e4c, #bd5748); color: #fff; }
+.stat-card--blue { background: linear-gradient(135deg, #8e3f32, #713329); color: #fff; }
 .stat-card--white { border: 1px solid var(--line); background: #fff; color: var(--ink); }
 .stat-card__top { display: flex; align-items: center; justify-content: space-between; }
 .stat-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9px; background: rgba(255, 255, 255, 0.16); }
@@ -66,7 +66,8 @@
 .panel-header h4 { margin: 0; color: var(--ink); font-size: 1rem; font-weight: 800; }
 .chart-total { flex: 0 0 auto; padding: 6px 9px; border-radius: 5px; background: #e6f3ef; color: #12665c; font-size: 0.72rem; font-weight: 750; }
 
-.chart-figure { position: relative; height: 220px; margin-top: 17px; overflow: hidden; border-radius: 6px; background: #f8faf9; }
+.chart-figure { position: relative; height: 220px; margin: 17px 0 0; overflow: hidden; border-radius: 6px; background: #f8faf9; }
+.dashboard-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .chart-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(116, 136, 136, 0.12) 1px, transparent 1px); background-size: 100% 25%; }
 .chart-bars { position: absolute; inset: 12px 18px 10px; display: flex; align-items: stretch; gap: 12px; }
 .month-bar { flex: 1; min-width: 0; display: grid; grid-template-rows: 16px minmax(0, 1fr) 18px; justify-items: center; align-items: end; }

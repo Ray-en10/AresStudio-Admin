@@ -51,7 +51,7 @@
         <button class="icon-button menu-toggle" type="button" [attr.aria-label]="sidebarCollapsed ? 'Expand navigation' : 'Collapse navigation'" [attr.aria-expanded]="!sidebarCollapsed" (click)="toggleSidebar()">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <form class="search-box" role="search" (submit)="submitSearch($event)" (click)="$event.stopPropagation()">
+        <form class="search-box" role="search" (submit)="submitSearch($event)">
           <input
             type="search"
             name="globalSearch"
@@ -59,16 +59,16 @@
             (focus)="searchFocused = true"
             placeholder="Search orders or equipment..."
             aria-label="Search orders or equipment"
-            aria-autocomplete="list"
+            aria-controls="global-search-results"
             [attr.aria-expanded]="searchFocused && searchTerm.trim().length >= 2"
           />
           <button class="search-action" type="submit" aria-label="Open first search result">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
           </button>
-          <div class="global-search-results" *ngIf="searchFocused && searchTerm.trim().length >= 2" role="listbox">
+          <div id="global-search-results" class="global-search-results" *ngIf="searchFocused && searchTerm.trim().length >= 2" aria-label="Search results">
             <p *ngIf="searchLoading" class="search-state">Loading saved orders and equipment...</p>
             <ng-container *ngIf="!searchLoading">
-              <button *ngFor="let result of searchResults" type="button" class="search-result" role="option" (click)="openSearchResult(result)">
+              <button *ngFor="let result of searchResults" type="button" class="search-result" (click)="openSearchResult(result)">
                 <span class="search-result-icon" aria-hidden="true">
                   <svg *ngIf="result.route === '/orders'" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21V3Z"/><path d="M9 8h6M9 12h6"/></svg>
                   <svg *ngIf="result.route === '/inventory'" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>

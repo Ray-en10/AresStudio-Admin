@@ -42,6 +42,12 @@ export class Login implements OnInit {
     });
   }
 
+  submitFromKeyboard(event: Event): void {
+    if ((event as KeyboardEvent).isComposing) return;
+    event.preventDefault();
+    this.submit();
+  }
+
   clearError(): void {
     this.errorMessage = '';
   }

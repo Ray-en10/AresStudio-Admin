@@ -17,7 +17,7 @@
   </div>
 
   <p *ngIf="errorMessage" class="inventory-message inventory-message--error" role="alert">{{ errorMessage }}</p>
-  <p *ngIf="successMessage" class="inventory-message inventory-message--success" role="status">{{ successMessage }}</p>
+  <output *ngIf="successMessage" class="inventory-message inventory-message--success" aria-live="polite">{{ successMessage }}</output>
 
   <div class="inventory-layout">
     <section class="stock-section" aria-label="Current equipment stock">

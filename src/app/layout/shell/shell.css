@@ -68,31 +68,6 @@ input {
   height: 22px;
 }
 
-.brand-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 8px 18px;
-}
-
-.brand-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7a5af8, #3b82f6);
-  color: white;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  box-shadow: 0 10px 20px rgba(104, 92, 246, 0.28);
-}
-
-.brand-text {
-  font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -153,50 +128,6 @@ input {
 
 .nav-icon rect {
   fill: none;
-}
-
-.sidebar-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 6px;
-}
-
-.mini-profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 10px;
-  border-radius: 14px;
-  background: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-.mini-profile__badge {
-  width: 32px;
-  height: 32px;
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #8b5cf6, #6366f1);
-}
-
-.mini-profile__meta {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.3;
-}
-
-.mini-profile__meta strong {
-  font-size: 0.83rem;
-}
-
-.mini-profile__meta span {
-  font-size: 0.72rem;
-  color: #64748b;
 }
 
 .logout-btn {
@@ -346,7 +277,7 @@ input {
 
 .search-action:hover {
   background: #e8efed;
-  color: #197c70;
+  color: #12665c;
 }
 
 .search-action svg {
@@ -403,7 +334,7 @@ input {
   flex: 0 0 32px;
   border-radius: 6px;
   background: #e9f4f1;
-  color: #197c70;
+  color: #12665c;
 }
 
 .search-result-icon svg {
@@ -452,18 +383,6 @@ input {
   padding: 14px 10px;
   color: #738187;
   font-size: 0.78rem;
-}
-
-.user-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #f9a8d4, #a78bfa);
-  color: white;
-  font-weight: 700;
-  font-size: 0.72rem;
 }
 
 .content-area {

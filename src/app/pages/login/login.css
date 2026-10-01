@@ -156,7 +156,7 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   background: #fbfcfc;
-  color: #809093;
+  color: #5e6d71;
   transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 

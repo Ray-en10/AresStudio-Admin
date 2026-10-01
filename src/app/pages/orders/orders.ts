@@ -41,11 +41,12 @@ export class Orders implements OnInit {
     const orders = this.ordersService.getOrders();
 
     const filtered = orders.filter((order) => {
-      const matchesPage = this.pageMode === 'ready'
-        ? order.status === 'Ready' || order.status === 'Picked up'
-        : this.pageMode === 'delivered'
-          ? order.status === 'Completed'
-          : true;
+      let matchesPage = true;
+      if (this.pageMode === 'ready') {
+        matchesPage = order.status === 'Ready' || order.status === 'Picked up';
+      } else if (this.pageMode === 'delivered') {
+        matchesPage = order.status === 'Completed';
+      }
       const matchesStatus = this.statusFilter === 'all' || this.statusKey(order.status) === this.statusFilter;
       const query = this.searchTerm.trim().toLowerCase();
       const matchesSearch =

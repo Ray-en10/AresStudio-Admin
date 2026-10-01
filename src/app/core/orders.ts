@@ -14,12 +14,19 @@ export interface OrderRecord {
   price: number;
   orderDate: string;
   orderLink: string;
+  orderItems: OrderLineRecord[];
+  imageData: string;
   status: string;
+}
+
+export interface OrderLineRecord {
+  modelUrl: string;
+  quantity: number;
 }
 
 interface ApiOrder {
   id: number;
-  orderId: string;
+  orderId: string | null;
   name: string;
   lastName: string;
   phone: string;
@@ -27,7 +34,9 @@ interface ApiOrder {
   description: string;
   price: number;
   orderDate: string;
-  orderLink: string;
+  orderLink: string | null;
+  items?: OrderLineRecord[] | null;
+  imageData?: string | null;
   status: string;
 }
 
@@ -50,12 +59,6 @@ export class Orders {
   getMonthlyRevenue(): Observable<number> {
     return this.http.get<{ totalRevenue: number }>(`${API_URL}/orders/stats/monthly-revenue`).pipe(
       map((response) => Number(response.totalRevenue ?? 0)),
-    );
-  }
-
-  getNextOrderId(): Observable<string> {
-    return this.http.get<{ orderId: string }>(`${API_URL}/orders/next-order-id`).pipe(
-      map((response) => response.orderId),
     );
   }
 
@@ -92,7 +95,7 @@ export class Orders {
   private fromApi(order: ApiOrder): OrderRecord {
     return {
       id: order.id,
-      orderId: order.orderId,
+      orderId: order.orderId ?? '',
       firstName: order.name,
       lastName: order.lastName,
       phone: order.phone ?? '',
@@ -100,14 +103,17 @@ export class Orders {
       description: order.description ?? '',
       price: Number(order.price ?? 0),
       orderDate: order.orderDate ?? '',
-      orderLink: order.orderLink ?? '',
+      orderLink: order.orderLink ?? order.items?.[0]?.modelUrl ?? '',
+      orderItems: order.items?.map((item) => ({ modelUrl: item.modelUrl, quantity: Number(item.quantity) })) ??
+        (order.orderLink ? [{ modelUrl: order.orderLink, quantity: 1 }] : []),
+      imageData: order.imageData ?? '',
       status: this.fromApiStatus(order.status),
     };
   }
 
   private toApi(order: OrderRecord): Omit<ApiOrder, 'id'> {
     return {
-      orderId: order.orderId,
+      orderId: order.orderId.trim() ? order.orderId : null,
       name: order.firstName,
       lastName: order.lastName,
       phone: order.phone,
@@ -115,7 +121,9 @@ export class Orders {
       description: order.description,
       price: order.price,
       orderDate: order.orderDate,
-      orderLink: order.orderLink,
+      orderLink: order.orderItems[0]?.modelUrl ?? order.orderLink,
+      items: order.orderItems.map((item) => ({ modelUrl: item.modelUrl, quantity: item.quantity })),
+      imageData: order.imageData || null,
       status: this.toApiStatus(order.status),
     };
   }

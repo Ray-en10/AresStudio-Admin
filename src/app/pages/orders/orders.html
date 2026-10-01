@@ -49,7 +49,7 @@
           <th>Description</th>
           <th>Price</th>
           <th>Order Date</th>
-          <th>Order Link</th>
+          <th>Models</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -65,10 +65,14 @@
           <td class="description-cell">
             <span class="truncate-text" [title]="order.description">{{ order.description }}</span>
           </td>
-          <td>{{ order.price | currency:'USD':'symbol':'1.0-0' }}</td>
+          <td>{{ order.price | currency:'TND':'symbol':'1.0-2' }}</td>
           <td>{{ order.orderDate }}</td>
           <td>
-            <a [href]="order.orderLink" target="_blank" rel="noreferrer">Open link</a>
+            <a *ngIf="order.orderItems.length" [href]="order.orderItems[0].modelUrl" target="_blank" rel="noreferrer">
+              {{ order.orderItems.length === 1 ? 'Open model' : order.orderItems.length + ' models' }}
+            </a>
+            <small *ngIf="order.orderItems.length === 1"> · {{ order.orderItems[0].quantity }} pcs</small>
+            <span *ngIf="!order.orderItems.length">—</span>
           </td>
           <td>
             <span class="status-pill" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
@@ -89,51 +93,62 @@
     <button type="button" aria-label="Next page" [disabled]="currentPage === pageCount" (click)="currentPage = currentPage + 1">›</button>
   </nav>
 
-  <div class="modal-backdrop" *ngIf="selectedOrder" (click)="closeOrderDetails()">
-    <div class="order-modal" (click)="$event.stopPropagation()">
+  <div class="modal-backdrop" *ngIf="selectedOrder">
+    <dialog open class="order-modal" aria-labelledby="order-modal-heading" (keydown.escape)="closeOrderDetails()">
       <div class="modal-header">
         <div>
-          <p class="eyebrow">Order details</p>
-          <h2>#{{ selectedOrder.orderId }}</h2>
+          <p class="eyebrow">Order record</p>
+          <div class="modal-title-row">
+            <h2 id="order-modal-heading">#{{ selectedOrder.orderId }}</h2>
+            <span class="status-pill" [ngClass]="statusClass(selectedOrder.status)">{{ selectedOrder.status }}</span>
+          </div>
         </div>
         <button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button>
       </div>
 
       <div class="modal-body">
-        <div class="detail-grid">
-          <div>
-            <span class="label">Customer</span>
-            <strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong>
-          </div>
-          <div>
-            <span class="label">Phone</span>
-            <strong>{{ selectedOrder.phone }}</strong>
-          </div>
-          <div class="full-width">
-            <span class="label">Address</span>
-            <strong>{{ selectedOrder.address }}</strong>
-          </div>
-          <div class="full-width">
-            <span class="label">Description</span>
-            <strong>{{ selectedOrder.description }}</strong>
-          </div>
-          <div>
-            <span class="label">Price</span>
-            <strong>{{ selectedOrder.price | currency:'USD':'symbol':'1.0-0' }}</strong>
-          </div>
-          <div>
-            <span class="label">Order date</span>
-            <strong>{{ selectedOrder.orderDate }}</strong>
-          </div>
-          <div>
-            <span class="label">Link</span>
-            <a [href]="selectedOrder.orderLink" target="_blank" rel="noreferrer">Open order</a>
-          </div>
+        <div class="order-summary-strip">
+          <div class="summary-total"><span>Total price</span><strong>{{ selectedOrder.price | currency:'TND':'symbol':'1.0-2' }}</strong></div>
+          <div><span>Order date</span><strong>{{ selectedOrder.orderDate }}</strong></div>
+          <div><span>Models</span><strong>{{ selectedOrder.orderItems.length }}</strong></div>
         </div>
 
+        <section class="detail-section" aria-labelledby="customer-heading">
+          <h3 id="customer-heading">Customer details</h3>
+          <div class="detail-grid">
+            <div><span class="label">Customer</span><strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong></div>
+            <div><span class="label">Phone</span><strong>{{ selectedOrder.phone || 'Not provided' }}</strong></div>
+            <div class="full-width"><span class="label">Address</span><strong>{{ selectedOrder.address || 'Not provided' }}</strong></div>
+          </div>
+        </section>
+
+        <section class="detail-section" aria-labelledby="models-heading">
+          <h3 id="models-heading">Models and quantities</h3>
+          <div *ngIf="selectedOrder.orderItems.length" class="order-model-list">
+            <div *ngFor="let item of selectedOrder.orderItems; let index = index" class="order-model-row">
+              <span class="model-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+              <div class="model-link-copy"><span>Model {{ index + 1 }}</span><a [href]="item.modelUrl" target="_blank" rel="noreferrer">{{ item.modelUrl }}</a></div>
+              <span class="model-quantity">{{ item.quantity }} <small>pcs</small></span>
+            </div>
+          </div>
+          <p *ngIf="!selectedOrder.orderItems.length" class="dialog-muted">No model links were added.</p>
+        </section>
+
+        <section class="detail-section order-notes" aria-labelledby="notes-heading">
+          <h3 id="notes-heading">Description</h3>
+          <p>{{ selectedOrder.description || 'No description provided.' }}</p>
+        </section>
+
+        <section *ngIf="selectedOrder.imageData" class="detail-section image-detail-section" aria-labelledby="image-heading">
+          <div><h3 id="image-heading">Reference image</h3><p>Attached to this order</p></div>
+          <a class="order-image-detail" [href]="selectedOrder.imageData" target="_blank" rel="noreferrer" aria-label="Open full-size order reference image">
+            <img [src]="selectedOrder.imageData" alt="Order reference" />
+          </a>
+        </section>
+
         <label class="status-editor">
-          <span>Status</span>
-          <select [(ngModel)]="selectedOrder.status">
+          <span>Update status</span>
+          <select [(ngModel)]="selectedOrder.status" [ngModelOptions]="{ standalone: true }">
             <option value="Pending">Pending</option>
             <option value="Ready">Ready</option>
             <option value="Picked up">Picked up</option>
@@ -146,6 +161,6 @@
         <button type="button" class="delete-btn" (click)="deleteSelectedOrder()">Delete</button>
         <button type="button" class="save-btn" (click)="saveSelectedOrderStatus()">Save changes</button>
       </div>
-    </div>
+    </dialog>
   </div>
 </section>

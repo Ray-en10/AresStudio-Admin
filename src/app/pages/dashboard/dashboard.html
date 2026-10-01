@@ -55,16 +55,20 @@
         <span class="chart-total">{{ ordersThisMonth }} this month</span>
       </div>
 
-      <div class="chart-figure">
-        <div class="chart-grid"></div>
-        <div class="chart-bars" role="group" aria-label="Order count for each of the last six months">
+      <figure class="chart-figure" aria-labelledby="orders-chart-caption">
+        <div class="chart-grid" aria-hidden="true"></div>
+        <div class="chart-bars" aria-hidden="true">
           <div class="month-bar" *ngFor="let month of monthBars">
             <span class="month-count">{{ month.count }}</span>
             <span class="bar" [style.height.%]="month.heightPercent"></span>
             <span class="month-label">{{ month.label }}</span>
           </div>
         </div>
-      </div>
+        <figcaption id="orders-chart-caption" class="dashboard-visually-hidden">
+          Orders per month for the last six months:
+          <span *ngFor="let month of monthBars">{{ month.label }}: {{ month.count }}. </span>
+        </figcaption>
+      </figure>
 
       <p class="chart-note" *ngIf="loadingOrders">Loading order history...</p>
     </article>

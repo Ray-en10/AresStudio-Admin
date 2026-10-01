@@ -20,8 +20,8 @@ interface GlobalSearchResult {
   styleUrl: './shell.css',
 })
 export class Shell implements OnInit {
-  private auth = inject(Auth);
-  private router = inject(Router);
+  private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
   private readonly ordersService = inject(Orders);
   private readonly inventoryService = inject(InventoryService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
@@ -53,7 +53,9 @@ export class Shell implements OnInit {
       .slice(0, 5)
       .map((item) => ({
         label: item.name,
-        detail: `${item.category}${item.color ? ` · ${item.color}` : ''} · ${item.quantity} ${item.unit}`,
+        detail: item.color
+          ? `${item.category} · ${item.color} · ${item.quantity} ${item.unit}`
+          : `${item.category} · ${item.quantity} ${item.unit}`,
         route: '/inventory',
         query: item.name,
       }));
