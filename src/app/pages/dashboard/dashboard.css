@@ -125,3 +125,12 @@
   .dashboard-lower { grid-template-columns: 1fr; }
   .chart-panel, .stocks-panel, .recent-orders-panel, .inventory-panel { padding: 14px; }
 }
+
+@media (max-width: 380px) {
+  .dashboard-page { gap: 15px; }
+  .dashboard-heading h1 { font-size: 1.5rem; }
+  .chart-figure { height: 190px; }
+  .chart-bars { inset: 12px 8px 10px; gap: 6px; }
+  .chart-total { padding: 5px 6px; font-size: 0.64rem; }
+  .panel-header { flex-wrap: wrap; }
+}

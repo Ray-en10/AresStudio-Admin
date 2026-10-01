@@ -79,8 +79,9 @@
           <span>Order description <small>(optional)</small></span>
           <textarea rows="3" formControlName="description" placeholder="Add notes about this order"></textarea>
         </label>
+      </div>
 
-        <section class="attachment-section">
+      <section class="attachment-section">
         <div class="attachment-heading"><strong>Reference image</strong><small>Optional · JPG, PNG, or WebP · up to 3 MB</small></div>
         <input #imageFile id="order-image" class="image-file-input" type="file" accept="image/jpeg,image/png,image/webp" (change)="onImageSelected($event)" />
         <div *ngIf="orderForm.controls.imageData.value" class="image-preview-row">
@@ -88,7 +89,6 @@
           <button class="remove-image-btn" type="button" (click)="removeImage(imageFile)">Remove image</button>
         </div>
       </section>
-      </div>
 
  
       <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>

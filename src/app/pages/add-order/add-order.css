@@ -141,6 +141,10 @@
   max-width: calc(50% - 7px);
 }
 
+.field-row--full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .field-row label {
   display: flex;
   flex-direction: column;
@@ -488,5 +492,40 @@
 
   .model-line .model-quantity {
     max-width: 72px;
+  }
+}
+
+@media (max-width: 380px) {
+  .page-header {
+    gap: 10px;
+  }
+
+  .status-badge {
+    max-width: 100%;
+    font-size: 0.7rem;
+  }
+
+  .model-section-heading {
+    align-items: flex-start;
+  }
+
+  .model-section-heading small {
+    max-width: 180px;
+    line-height: 1.4;
+  }
+
+  .add-model-btn {
+    flex: 0 0 auto;
+    font-size: 0.68rem;
+  }
+
+  .model-line {
+    grid-template-columns: minmax(0, 1fr) 62px 28px;
+    gap: 5px;
+    padding: 7px;
+  }
+
+  .model-line .model-quantity {
+    max-width: 62px;
   }
 }

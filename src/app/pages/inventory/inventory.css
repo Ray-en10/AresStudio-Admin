@@ -442,6 +442,7 @@
 
 .visually-hidden {
   position: absolute;
+  left: 0;
   width: 1px;
   height: 1px;
   padding: 0;
@@ -497,6 +498,18 @@
   .inventory-table {
     min-width: 550px;
   }
+}
+
+@media (max-width: 380px) {
+  .inventory-page { gap: 16px; }
+  .inventory-header { align-items: flex-start; }
+  .inventory-header h1 { font-size: 1.5rem; }
+  .inventory-header-mark { width: 42px; height: 42px; flex: 0 0 42px; }
+  .inventory-header-mark svg { width: 24px; height: 24px; }
+  .inventory-filters { gap: 6px; }
+  .filter-select { width: 96px; }
+  .add-stock-section, .stock-section { padding-right: 10px; padding-left: 10px; }
+  .form-row { grid-template-columns: minmax(0, 1fr) 74px; }
 }
 
 .quantity-controls .edit-stock-button {

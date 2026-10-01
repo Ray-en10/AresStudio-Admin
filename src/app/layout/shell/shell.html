@@ -1,5 +1,5 @@
-<div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed">
-  <aside class="sidebar">
+<div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed" [class.mobile-nav-open]="isMobileScreen && !sidebarCollapsed">
+  <aside class="sidebar" [attr.aria-hidden]="isMobileScreen && sidebarCollapsed ? 'true' : null">
     <div class="img">
         <img class="img" src="Areslog.jpg" alt="Logo" />
     </div>
@@ -7,22 +7,22 @@
     <nav class="sidebar-nav" aria-label="Main navigation">
       <div class="nav-group">
         <p class="nav-group-label">Dashboard</p>
-        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
           <span>Dashboard</span>
         </a>
-        <a class="nav-item" routerLink="/inventory" routerLinkActive="active">
+        <a class="nav-item" routerLink="/inventory" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
           <span>Equipment</span>
         </a>
       </div>
       <div class="nav-group">
         <p class="nav-group-label">Pages</p>
-        <a class="nav-item" routerLink="/add-order" routerLinkActive="active">
+        <a class="nav-item" routerLink="/add-order" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/></svg>
           <span>Add Order</span>
         </a>
-        <a class="nav-item" routerLink="/orders" routerLinkActive="active">
+        <a class="nav-item" routerLink="/orders" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="m3 6 1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2"/></svg>
           <span>Orders</span>
         </a>
@@ -31,11 +31,11 @@
 
       <div class="nav-group">
         <p class="nav-group-label">Fulfilment</p>
-        <a class="nav-item" routerLink="/ready-in-stock" routerLinkActive="active">
+        <a class="nav-item" routerLink="/ready-in-stock" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-2 13H5L3 7Z"/><path d="M8 7a4 4 0 0 1 8 0"/></svg>
           <span>Ready In Stock</span>
         </a>
-        <a class="nav-item" routerLink="/delivered" routerLinkActive="active">
+        <a class="nav-item" routerLink="/delivered" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
           <span>Delivered</span>
         </a>
@@ -44,11 +44,12 @@
     </nav>
 
   </aside>
+  <button *ngIf="isMobileScreen && !sidebarCollapsed" class="nav-scrim" type="button" aria-label="Close navigation" (click)="closeMobileNavigation()"></button>
 
   <div class="main-panel">
     <header class="topbar">
       <div class="topbar__left">
-        <button class="icon-button menu-toggle" type="button" [attr.aria-label]="sidebarCollapsed ? 'Expand navigation' : 'Collapse navigation'" [attr.aria-expanded]="!sidebarCollapsed" (click)="toggleSidebar()">
+        <button class="icon-button menu-toggle" type="button" [attr.aria-label]="sidebarCollapsed ? 'Open navigation' : 'Close navigation'" [attr.aria-expanded]="!sidebarCollapsed" (click)="toggleSidebar()">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
         <form class="search-box" role="search" (submit)="submitSearch($event)">
@@ -96,5 +97,18 @@
     <main class="content-area">
       <router-outlet />
     </main>
+  </div>
+  <div *ngIf="isNavigating()" class="route-loading-overlay" role="status" aria-live="polite">
+    <div class="loading-cube-stage" aria-hidden="true">
+      <div class="loading-cube">
+        <span class="cube-face cube-face--front"></span>
+        <span class="cube-face cube-face--back"></span>
+        <span class="cube-face cube-face--right"></span>
+        <span class="cube-face cube-face--left"></span>
+        <span class="cube-face cube-face--top"></span>
+        <span class="cube-face cube-face--bottom"></span>
+      </div>
+    </div>
+    <span class="loading-caption">Loading Into Your World</span>
   </div>
 </div>

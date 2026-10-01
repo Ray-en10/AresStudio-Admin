@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
+import { signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationStart, Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../core/auth';
 import { InventoryService } from '../../core/inventory';
 import { OrderRecord, Orders } from '../../core/orders';
@@ -11,6 +12,12 @@ interface GlobalSearchResult {
   detail: string;
   route: string;
   query: string;
+}
+
+function isNarrowViewport(): boolean {
+  return typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(max-width: 980px)').matches;
 }
 
 @Component({
@@ -25,12 +32,26 @@ export class Shell implements OnInit {
   private readonly ordersService = inject(Orders);
   private readonly inventoryService = inject(InventoryService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
-  sidebarCollapsed = false;
+  isMobileScreen = isNarrowViewport();
+  sidebarCollapsed = this.isMobileScreen;
   searchTerm = '';
   searchFocused = false;
   searchLoading = true;
+  isNavigating = signal(false);
+  private navigationTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        if (this.navigationTimer) clearTimeout(this.navigationTimer);
+        this.isNavigating.set(true);
+        this.navigationTimer = setTimeout(() => {
+          this.isNavigating.set(false);
+          this.navigationTimer = null;
+        }, 1200);
+      }
+    });
+
     let requestsComplete = 0;
     const finishRequest = () => {
       requestsComplete += 1;
@@ -71,6 +92,7 @@ export class Shell implements OnInit {
 
   openSearchResult(result: GlobalSearchResult): void {
     this.searchFocused = false;
+    this.closeMobileNavigation();
     this.router.navigate([result.route], { queryParams: { q: result.query } });
   }
 
@@ -81,6 +103,19 @@ export class Shell implements OnInit {
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  closeMobileNavigation(): void {
+    if (this.isMobileScreen) this.sidebarCollapsed = true;
+  }
+
+  @HostListener('window:resize')
+  updateMobileNavigation(): void {
+    const isMobileScreen = isNarrowViewport();
+    if (isMobileScreen !== this.isMobileScreen) {
+      this.isMobileScreen = isMobileScreen;
+      this.sidebarCollapsed = isMobileScreen;
+    }
   }
 
   logout(): void {
@@ -102,4 +137,5 @@ export class Shell implements OnInit {
       query: order.orderId,
     };
   }
+
 }
