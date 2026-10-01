@@ -1,4 +1,4 @@
-<div class="app-shell">
+<div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed">
   <aside class="sidebar">
     <div class="img">
         <img class="img" src="Areslog.jpg" alt="Logo" />
@@ -7,53 +7,89 @@
     <nav class="sidebar-nav" aria-label="Main navigation">
       <div class="nav-group">
         <p class="nav-group-label">Dashboard</p>
-        <a class="nav-item active" routerLink="/dashboard" routerLinkActive="active">
-          <span class="nav-icon">◫</span>
+        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg>
           <span>Dashboard</span>
+        </a>
+        <a class="nav-item" routerLink="/inventory" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
+          <span>Equipment</span>
         </a>
       </div>
       <div class="nav-group">
         <p class="nav-group-label">Pages</p>
-        <a class="nav-item" routerLink="/" routerLinkActive="active">
-          <span class="nav-icon">◌</span>
+        <a class="nav-item" routerLink="/add-order" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/></svg>
           <span>Add Order</span>
         </a>
         <a class="nav-item" routerLink="/orders" routerLinkActive="active">
-          <span class="nav-icon">◌</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="m3 6 1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2"/></svg>
           <span>Orders</span>
         </a>
   
       </div>
 
       <div class="nav-group">
-        <p class="nav-group-label">Elements</p>
-        <a class="nav-item" routerLink="/" routerLinkActive="active">
-          <span class="nav-icon">◌</span>
+        <p class="nav-group-label">Fulfilment</p>
+        <a class="nav-item" routerLink="/ready-in-stock" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-2 13H5L3 7Z"/><path d="M8 7a4 4 0 0 1 8 0"/></svg>
           <span>Ready In Stock</span>
+        </a>
+        <a class="nav-item" routerLink="/delivered" routerLinkActive="active">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+          <span>Delivered</span>
         </a>
     
       </div>
     </nav>
 
-    <div class="sidebar-footer">
- 
-      <button class="logout-btn" type="button" (click)="logout()">Logout</button>
-    </div>
   </aside>
 
   <div class="main-panel">
     <header class="topbar">
       <div class="topbar__left">
-        <button class="icon-button" type="button" aria-label="Toggle menu">☰</button>
-        <label class="search-box" aria-label="Search">
-          <span class="search-icon">⌕</span>
-          <input type="text" placeholder="Search here..." />
-        </label>
+        <button class="icon-button menu-toggle" type="button" [attr.aria-label]="sidebarCollapsed ? 'Expand navigation' : 'Collapse navigation'" [attr.aria-expanded]="!sidebarCollapsed" (click)="toggleSidebar()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <form class="search-box" role="search" (submit)="submitSearch($event)" (click)="$event.stopPropagation()">
+          <input
+            type="search"
+            name="globalSearch"
+            [(ngModel)]="searchTerm"
+            (focus)="searchFocused = true"
+            placeholder="Search orders or equipment..."
+            aria-label="Search orders or equipment"
+            aria-autocomplete="list"
+            [attr.aria-expanded]="searchFocused && searchTerm.trim().length >= 2"
+          />
+          <button class="search-action" type="submit" aria-label="Open first search result">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+          </button>
+          <div class="global-search-results" *ngIf="searchFocused && searchTerm.trim().length >= 2" role="listbox">
+            <p *ngIf="searchLoading" class="search-state">Loading saved orders and equipment...</p>
+            <ng-container *ngIf="!searchLoading">
+              <button *ngFor="let result of searchResults" type="button" class="search-result" role="option" (click)="openSearchResult(result)">
+                <span class="search-result-icon" aria-hidden="true">
+                  <svg *ngIf="result.route === '/orders'" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21V3Z"/><path d="M9 8h6M9 12h6"/></svg>
+                  <svg *ngIf="result.route === '/inventory'" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
+                </span>
+                <span class="search-result-copy"><strong>{{ result.label }}</strong><small>{{ result.detail }}</small></span>
+                <span class="search-result-type">{{ result.route === '/orders' ? 'Order' : 'Equipment' }}</span>
+              </button>
+              <p *ngIf="searchResults.length === 0" class="search-state">No matching saved records.</p>
+            </ng-container>
+          </div>
+        </form>
       </div>
 
       <div class="topbar__right">
-        <button class="icon-button soft" type="button" aria-label="Notifications">🔔</button>
-
+        <button class="icon-button soft notification-button" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+        </button>
+        <button class="logout-btn" type="button" (click)="logout()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M21 3v18"/></svg>
+          <span>Logout</span>
+        </button>
       </div>
     </header>
 

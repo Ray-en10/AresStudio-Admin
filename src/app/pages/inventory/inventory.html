@@ -1,0 +1,142 @@
+<section class="inventory-page">
+  <header class="inventory-header">
+    <div>
+      <p class="inventory-eyebrow">Workshop / Materials</p>
+      <h1>Equipment</h1>
+      <p class="inventory-intro">Keep an eye on supplies, color by color.</p>
+    </div>
+    <div class="inventory-header-mark" aria-hidden="true">
+      <svg viewBox="0 0 48 48"><path d="m24 5 18 10v18L24 43 6 33V15L24 5Z"/><path d="m6 15 18 10 18-10M24 25v18M15 10l18 10v10"/></svg>
+    </div>
+  </header>
+
+  <div class="inventory-summary" aria-label="Inventory summary">
+    <div class="summary-item"><span>Tracked supplies</span><strong>{{ totalItems }}</strong><small>separate items and colors</small></div>
+    <div class="summary-item"><span>Filament colors</span><strong>{{ filamentColors }}</strong><small>tracked individually</small></div>
+    <div class="summary-item"><span>Categories in use</span><strong>{{ categoryCount }}</strong><small>including custom supplies</small></div>
+  </div>
+
+  <p *ngIf="errorMessage" class="inventory-message inventory-message--error" role="alert">{{ errorMessage }}</p>
+  <p *ngIf="successMessage" class="inventory-message inventory-message--success" role="status">{{ successMessage }}</p>
+
+  <div class="inventory-layout">
+    <section class="stock-section" aria-label="Current equipment stock">
+      <div class="stock-section-header">
+        <div>
+          <p class="inventory-eyebrow">On hand</p>
+          <h2>Current stock</h2>
+        </div>
+        <span class="item-count">{{ items.length }} items</span>
+      </div>
+
+      <div class="inventory-filters">
+        <label class="inventory-search">
+          <span class="visually-hidden">Search inventory</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+          <input type="search" [(ngModel)]="searchTerm" (ngModelChange)="currentPage = 1" [ngModelOptions]="{ standalone: true }" placeholder="Search equipment" />
+        </label>
+        <label class="filter-select">
+          <span class="visually-hidden">Filter category</span>
+          <select [(ngModel)]="categoryFilter" (ngModelChange)="currentPage = 1" [ngModelOptions]="{ standalone: true }">
+            <option>All</option>
+            <option>Filament</option>
+            <option>Keychains</option>
+            <option>Packaging</option>
+            <option>Other</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="inventory-table-wrap">
+        <table class="inventory-table">
+          <thead><tr><th>Supply</th><th>Category</th><th>Color</th><th>Remaining</th><th><span class="visually-hidden">Edit or adjust stock</span></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of paginatedItems">
+              <td><strong>{{ item.name }}</strong></td>
+              <td><span class="category-label">{{ item.category }}</span></td>
+              <td>
+                <span *ngIf="item.color" class="color-value"><i [style.backgroundColor]="item.color"></i>{{ item.color }}</span>
+                <span *ngIf="!item.color" class="muted-value">—</span>
+              </td>
+              <td class="quantity-cell">{{ item.quantity | number:'1.0-2' }} <span>{{ item.unit }}</span></td>
+              <td>
+                <div class="quantity-controls">
+                  <button type="button" class="edit-stock-button" [attr.aria-label]="'Edit ' + item.name" title="Edit item" [disabled]="isUpdating(item)" (click)="startEditing(item)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 4 4M4 20l4-.8L19 8a2.8 2.8 0 0 0-4-4L4 15l-.8 5Z"/></svg>
+                  </button>
+                  <button type="button" aria-label="Use one unit" [disabled]="item.quantity <= 0 || isUpdating(item)" (click)="adjustStock(item, -1)">−</button>
+                  <button type="button" aria-label="Add one unit" [disabled]="isUpdating(item)" (click)="adjustStock(item, 1)">+</button>
+                  <button type="button" class="delete-stock-button" [attr.aria-label]="'Delete ' + item.name" title="Delete item" [disabled]="isUpdating(item)" (click)="deleteItem(item)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="!isLoading && items.length === 0">
+              <td colspan="5" class="empty-state">{{ totalItems ? 'No supplies match this search.' : 'Your inventory is empty. Add your first supply.' }}</td>
+            </tr>
+            <tr *ngIf="isLoading"><td colspan="5" class="empty-state">Loading database inventory...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <app-pagination [totalItems]="items.length" [pageSize]="pageSize" [currentPage]="currentPage" (pageChange)="currentPage = $event" />
+      <p class="stock-footnote">Changes are saved to your database as you adjust quantities.</p>
+    </section>
+
+    <aside class="add-stock-section">
+      <div class="stock-section-header">
+        <div>
+          <p class="inventory-eyebrow">{{ editingItem ? 'Update details' : 'New purchase' }}</p>
+          <h2>{{ editingItem ? 'Edit equipment' : 'Add stock' }}</h2>
+        </div>
+        <span class="add-mark" aria-hidden="true">+</span>
+      </div>
+
+      <form [formGroup]="stockForm" (ngSubmit)="addStock()">
+        <label class="form-field">
+          <span>Item name</span>
+          <input type="text" formControlName="name" placeholder="e.g. PLA, ring blanks" />
+        </label>
+
+        <label class="form-field">
+          <span>Category</span>
+          <select formControlName="category">
+            <option>Filament</option>
+            <option>Keychains</option>
+            <option>Packaging</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label *ngIf="isFilament" class="form-field color-field">
+          <span>Filament color</span>
+          <span class="color-input-wrap"><input type="color" formControlName="color" /><span>{{ stockForm.controls.color.value }}</span></span>
+        </label>
+
+        <div class="form-row">
+          <label class="form-field">
+            <span>{{ editingItem ? 'Remaining quantity' : 'Quantity bought' }}</span>
+            <input type="number" min="0" step="0.01" formControlName="quantity" />
+          </label>
+          <label class="form-field">
+            <span>Unit</span>
+            <select formControlName="unit">
+              <option value="g">g</option>
+              <option value="kg">kg</option>
+              <option value="pcs">pcs</option>
+              <option value="rolls">rolls</option>
+              <option value="boxes">boxes</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="add-stock-button" type="submit" [disabled]="stockForm.invalid || isSaving || isLoading || (!editingItem && stockForm.controls.quantity.value <= 0)">
+          <svg *ngIf="!editingItem" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>{{ isSaving ? 'Saving...' : editingItem ? 'Save changes' : 'Add to inventory' }}</span>
+        </button>
+        <button *ngIf="editingItem" class="cancel-edit-button" type="button" [disabled]="isSaving" (click)="cancelEditing()">Cancel edit</button>
+      </form>
+      <p *ngIf="!editingItem" class="merge-note">Matching supplies and colors are combined into one stock total.</p>
+    </aside>
+  </div>
+</section>

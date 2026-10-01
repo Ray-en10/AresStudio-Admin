@@ -1,76 +1,125 @@
 <section class="dashboard-page">
+  <header class="dashboard-heading">
+    <div>
+      <p class="dashboard-eyebrow">Studio overview</p>
+      <h1>Dashboard</h1>
+      <p>Orders, revenue, and supplies at a glance.</p>
+    </div>
+    <a class="new-order-link" routerLink="/add-order">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      <span>New order</span>
+    </a>
+  </header>
+
+  <p *ngIf="ordersError" class="dashboard-error" role="alert">{{ ordersError }}</p>
+
   <div class="stat-grid">
     <article class="stat-card stat-card--purple">
-        <div class="stat-card__top">
-            <div class="stat-icon">💰</div>
-            <button class="range-pill" type="button">Month</button></div>
-      <div class="stat-value-row">
-        <h3>TND</h3>
-        <span class="pulse-icon">↻</span>
+      <div class="stat-card__top">
+        <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3zM3 7l2-4h14l2 4M7 12h4M7 16h7"/></svg></div>
+        <span class="metric-period">This month</span>
       </div>
-      <p>Total Earning</p>
+      <div class="stat-value-row">
+        <h3>{{ monthlyRevenue | number:'1.0-2' }} <small>TND</small></h3>
+      </div>
+      <p>Revenue</p>
     </article>
 
     <article class="stat-card stat-card--blue">
       <div class="stat-card__top">
-        <div class="stat-icon">🧾</div>
-        <button class="range-pill" type="button">Month</button>
+        <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21V3Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></div>
+        <span class="metric-period">All time</span>
       </div>
       <div class="stat-value-row">
-        <h3></h3>
-        <span class="pulse-icon">↗</span>
+        <h3>{{ loadingOrders ? '—' : totalOrders }}</h3>
       </div>
-      <p>Orders</p>
+      <p>Total orders</p>
     </article>
 
     <article class="stat-card stat-card--white">
       <div class="stat-card__top">
-        <div class="stat-icon"></div>
+        <div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></div>
+        <span class="metric-period metric-period--light">Needs attention</span>
       </div>
       <div class="stat-value-row">
-        <h3>TND</h3>
+        <h3>{{ loadingOrders ? '—' : activeOrders }}</h3>
       </div>
-      <p>Income</p>
+      <p>Open orders</p>
     </article>
   </div>
 
   <div class="dashboard-lower">
     <article class="chart-panel">
       <div class="panel-header">
-        <h4>Orders Growth</h4>
-        <button class="range-pill light" type="button">Month</button>
+        <div><h4>Orders over time</h4><p>Created in the last six months</p></div>
+        <span class="chart-total">{{ ordersThisMonth }} this month</span>
       </div>
 
       <div class="chart-figure">
         <div class="chart-grid"></div>
-        <div class="chart-bars" aria-label="Growth chart">
-          <span class="bar b1"></span>
-          <span class="bar b2"></span>
-          <span class="bar b3"></span>
-          <span class="bar b4"></span>
-          <span class="bar b5"></span>
-          <span class="bar b6"></span>
-          <span class="bar b7"></span>
-          <span class="bar b8"></span>
-          <span class="bar b9"></span>
+        <div class="chart-bars" role="group" aria-label="Order count for each of the last six months">
+          <div class="month-bar" *ngFor="let month of monthBars">
+            <span class="month-count">{{ month.count }}</span>
+            <span class="bar" [style.height.%]="month.heightPercent"></span>
+            <span class="month-label">{{ month.label }}</span>
+          </div>
         </div>
       </div>
 
-      <div class="chart-summary">
-        <span class="amount">TND</span>
-      </div>
+      <p class="chart-note" *ngIf="loadingOrders">Loading order history...</p>
     </article>
 
-    <aside class="stocks-panel">
+    <aside class="stocks-panel" aria-labelledby="order-status-heading">
       <div class="panel-header">
-        <h4>Most In Stock</h4>
+        <div><h4 id="order-status-heading">Order status</h4><p>Current workload</p></div>
       </div>
-      <div class="stock-chart stock-chart--purple"></div>
-      <div class="stock-item">
-        <div class="stock-main">
-
+      <div class="status-summary-list">
+        <div class="status-summary-row" *ngFor="let status of statusSummary">
+          <div class="status-summary-label"><span>{{ status.label }}</span><strong>{{ status.count }}</strong></div>
+          <div class="status-track"><span [ngClass]="status.className" [style.width.%]="status.widthPercent"></span></div>
         </div>
       </div>
+    </aside>
+  </div>
+
+  <div class="dashboard-bottom-grid">
+    <section class="recent-orders-panel">
+      <div class="panel-header">
+        <div><h4>Recent orders</h4><p>Latest records from your database</p></div>
+        <a routerLink="/orders" class="panel-link">All orders <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="recent-table-wrap">
+        <table class="recent-table">
+          <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th><th>Price</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let order of paginatedRecentOrders">
+              <td><strong>#{{ order.orderId }}</strong></td>
+              <td>{{ order.firstName }} {{ order.lastName }}</td>
+              <td>{{ order.orderDate }}</td>
+              <td><span class="status-pill" [ngClass]="statusClass(order.status)">{{ order.status }}</span></td>
+              <td>{{ order.price | number:'1.0-2' }} TND</td>
+            </tr>
+            <tr *ngIf="!loadingOrders && recentOrders.length === 0"><td colspan="5" class="dashboard-empty">No orders in the database yet.</td></tr>
+            <tr *ngIf="loadingOrders"><td colspan="5" class="dashboard-empty">Loading orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <app-pagination [totalItems]="recentOrders.length" [pageSize]="pageSize" [currentPage]="currentPage" (pageChange)="currentPage = $event" />
+    </section>
+
+    <aside class="inventory-panel" aria-labelledby="inventory-summary-heading">
+      <div class="panel-header">
+        <div><h4 id="inventory-summary-heading">Supplies on hand</h4><p>Current inventory</p></div>
+        <a routerLink="/inventory" class="panel-link" aria-label="Open equipment inventory">View <span aria-hidden="true">→</span></a>
+      </div>
+      <p *ngIf="inventoryError" class="dashboard-empty">{{ inventoryError }}</p>
+      <div *ngFor="let item of inventoryItems" class="inventory-mini-row">
+        <span class="inventory-mini-swatch" [style.backgroundColor]="item.color || '#197c70'"></span>
+        <div class="inventory-mini-name"><strong>{{ item.name }}</strong><small>{{ item.category }}{{ item.color ? ' · ' + item.color : '' }}</small></div>
+        <span class="inventory-mini-quantity">{{ item.quantity | number:'1.0-2' }} {{ item.unit }}</span>
+      </div>
+      <p *ngIf="!loadingInventory && inventoryItems.length === 0 && !inventoryError" class="dashboard-empty">No supplies tracked yet.</p>
+      <p *ngIf="loadingInventory" class="dashboard-empty">Loading inventory...</p>
     </aside>
   </div>
 </section>

@@ -1,22 +1,41 @@
-import { Service } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map, switchMap, tap } from 'rxjs';
+import { API_URL } from './api';
 
-@Service()
+interface LoginResponse {
+  username: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class Auth {
+  private readonly http = inject(HttpClient);
+
   private get store() {
     return typeof sessionStorage !== 'undefined' ? sessionStorage : null;
   }
 
-  login(user: string, pass: string): boolean {
-    const ok = user === 'admin' && pass === 'admin';
-    if (ok) this.store?.setItem('auth', '1');
-    return ok;
+  login(username: string, password: string) {
+    return this.http.get<unknown>(`${API_URL}/auth/csrf`).pipe(
+      switchMap(() => this.http.post<LoginResponse>(`${API_URL}/auth/login`, { username, password })),
+      tap(() => this.store?.setItem('auth', '1')),
+    );
   }
 
-  logout() {
+  validateSession(): Observable<void> {
+    return this.http.get<LoginResponse>(`${API_URL}/auth/session`).pipe(map(() => undefined));
+  }
+
+  logout(): Observable<void> {
+    this.store?.removeItem('auth');
+    return this.http.post<void>(`${API_URL}/auth/logout`, {});
+  }
+
+  clearLocalSession(): void {
     this.store?.removeItem('auth');
   }
 
   isLoggedIn() {
-    return this.store?.getItem('auth') === '1';
+    return Boolean(this.store?.getItem('auth'));
   }
 }

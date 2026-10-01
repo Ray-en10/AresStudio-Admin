@@ -1,1 +1,147 @@
-<p>orders works!</p>
+<section class="orders-page">
+  <div class="page-topbar">
+    <div>
+      <p class="eyebrow">{{ pageMode === 'all' ? 'Overview' : 'Fulfilment' }}</p>
+      <h1>{{ pageTitle }}</h1>
+      <p class="orders-intro">{{ pageMode === 'all' ? 'Review, search, and manage every order.' : pageMode === 'ready' ? 'Orders prepared for collection.' : 'Completed customer orders.' }}</p>
+    </div>
+    <a class="add-order-link" routerLink="/add-order">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      <span>New order</span>
+    </a>
+  </div>
+
+  <div class="toolbar">
+    <label class="search-box">
+      <span>Search</span>
+      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="currentPage = 1" placeholder="Search by name, ID, phone, address or description" />
+    </label>
+
+    <label class="filter-box">
+      <span>Status</span>
+      <select [(ngModel)]="statusFilter" (ngModelChange)="currentPage = 1">
+        <option value="all">{{ pageMode === 'all' ? 'All statuses' : 'All in this view' }}</option>
+        <option *ngFor="let status of pageStatuses" [value]="statusKey(status)">{{ status }}</option>
+      </select>
+    </label>
+
+    <label class="filter-box">
+      <span>Sort by</span>
+      <select [(ngModel)]="sortBy" (ngModelChange)="currentPage = 1">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="name-asc">Name A–Z</option>
+        <option value="name-desc">Name Z–A</option>
+        <option value="id-asc">Order ID ↑</option>
+        <option value="id-desc">Order ID ↓</option>
+      </select>
+    </label>
+  </div>
+
+  <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+
+  <div class="orders-table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Client</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Order Date</th>
+          <th>Order Link</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of paginatedOrders">
+          <td>#{{ order.orderId }}</td>
+          <td class="customer-cell">
+            <div class="customer-name">{{ order.firstName }} {{ order.lastName }}</div>
+            <div class="customer-meta">{{ order.phone }}</div>
+            <div class="customer-meta">{{ order.address }}</div>
+          </td>
+          <td class="description-cell">
+            <span class="truncate-text" [title]="order.description">{{ order.description }}</span>
+          </td>
+          <td>{{ order.price | currency:'USD':'symbol':'1.0-0' }}</td>
+          <td>{{ order.orderDate }}</td>
+          <td>
+            <a [href]="order.orderLink" target="_blank" rel="noreferrer">Open link</a>
+          </td>
+          <td>
+            <span class="status-pill" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
+          </td>
+          <td class="action-cell">
+            <button type="button" class="view-btn" (click)="openOrderDetails(order)">View</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredOrders.length === 0">
+          <td colspan="8">{{ emptyMessage }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [totalItems]="filteredOrders.length" [pageSize]="pageSize" [currentPage]="currentPage" (pageChange)="currentPage = $event" />
+
+  <div class="modal-backdrop" *ngIf="selectedOrder" (click)="closeOrderDetails()">
+    <div class="order-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Order details</p>
+          <h2>#{{ selectedOrder.orderId }}</h2>
+        </div>
+        <button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div>
+            <span class="label">Customer</span>
+            <strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong>
+          </div>
+          <div>
+            <span class="label">Phone</span>
+            <strong>{{ selectedOrder.phone }}</strong>
+          </div>
+          <div class="full-width">
+            <span class="label">Address</span>
+            <strong>{{ selectedOrder.address }}</strong>
+          </div>
+          <div class="full-width">
+            <span class="label">Description</span>
+            <strong>{{ selectedOrder.description }}</strong>
+          </div>
+          <div>
+            <span class="label">Price</span>
+            <strong>{{ selectedOrder.price | currency:'USD':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div>
+            <span class="label">Order date</span>
+            <strong>{{ selectedOrder.orderDate }}</strong>
+          </div>
+          <div>
+            <span class="label">Link</span>
+            <a [href]="selectedOrder.orderLink" target="_blank" rel="noreferrer">Open order</a>
+          </div>
+        </div>
+
+        <label class="status-editor">
+          <span>Status</span>
+          <select [(ngModel)]="selectedOrder.status">
+            <option value="Pending">Pending</option>
+            <option value="Ready">Ready</option>
+            <option value="Picked up">Picked up</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="delete-btn" (click)="deleteSelectedOrder()">Delete</button>
+        <button type="button" class="save-btn" (click)="saveSelectedOrderStatus()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</section>
