@@ -39,6 +39,15 @@ testem.log
 /typings
 __screenshots__/
 
+# Local secrets and backend build output
+.env
+.env.*
+!.env.example
+/backend/target/
+*.dump
+*.backup
+*.bak
+
 # System files
 .DS_Store
 Thumbs.db

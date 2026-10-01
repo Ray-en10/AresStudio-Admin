@@ -2,6 +2,12 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
 
+The repository contains the Angular frontend and the Spring Boot API under `backend/`. PostgreSQL data is hosted separately and must not be committed to Git.
+
+## Deploying to the web
+
+For the Vercel frontend, Render API, hosted PostgreSQL, required environment variables, and first-deploy checks, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Development server
 
 To start a local development server, run:
