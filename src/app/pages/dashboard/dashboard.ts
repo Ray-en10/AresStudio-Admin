@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { InventoryRecord, InventoryService } from '../../core/inventory';
 import { OrderRecord, Orders } from '../../core/orders';
-import { Pagination } from '../../shared/pagination/pagination';
+import { getPaginationPages } from '../../shared/pagination/pagination';
 
 interface MonthBar {
   label: string;
@@ -20,7 +20,7 @@ interface StatusSummary {
 
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterLink, Pagination],
+  imports: [CommonModule, RouterLink],
   selector: 'app-dashboard',
   styleUrl: './dashboard.css',
   templateUrl: './dashboard.html',
@@ -88,6 +88,14 @@ export class Dashboard implements OnInit {
   get paginatedRecentOrders(): OrderRecord[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.recentOrders.slice(start, start + this.pageSize);
+  }
+
+  get pageCount(): number {
+    return Math.ceil(this.recentOrders.length / this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return getPaginationPages(this.currentPage, this.pageCount);
   }
 
   get monthBars(): MonthBar[] {

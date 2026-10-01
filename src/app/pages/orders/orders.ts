@@ -3,12 +3,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderRecord, Orders as OrdersService } from '../../core/orders';
-import { Pagination } from '../../shared/pagination/pagination';
+import { getPaginationPages } from '../../shared/pagination/pagination';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule, Pagination, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   styleUrl: './orders.css',
   templateUrl: './orders.html',
 })
@@ -87,6 +87,14 @@ export class Orders implements OnInit {
   get paginatedOrders(): OrderRecord[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredOrders.slice(start, start + this.pageSize);
+  }
+
+  get pageCount(): number {
+    return Math.ceil(this.filteredOrders.length / this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return getPaginationPages(this.currentPage, this.pageCount);
   }
 
   get pageStatuses(): string[] {

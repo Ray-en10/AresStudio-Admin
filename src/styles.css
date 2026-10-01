@@ -105,3 +105,48 @@ body {
 .login-button:active {
   transform: translateY(0);
 }
+
+.table-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 8px 3px;
+}
+
+.table-pagination button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid #dce4e3;
+  border-radius: 5px;
+  background: #fff;
+  color: #43545a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.table-pagination button:hover:not(:disabled):not(.current) {
+  border-color: #8bbdb2;
+  background: #f0f8f5;
+}
+
+.table-pagination button.current {
+  border-color: #197c70;
+  background: #197c70;
+  color: #fff;
+}
+
+.table-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.table-pagination button[aria-label^='Previous'],
+.table-pagination button[aria-label^='Next'] {
+  font-size: 1.1rem;
+  line-height: 1;
+}

@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { InventoryRecord, InventoryService } from '../../core/inventory';
-import { Pagination } from '../../shared/pagination/pagination';
+import { getPaginationPages } from '../../shared/pagination/pagination';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, Pagination],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './inventory.html',
   styleUrl: './inventory.css',
 })
@@ -67,6 +66,14 @@ export class Inventory implements OnInit {
   get paginatedItems(): InventoryRecord[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.items.slice(start, start + this.pageSize);
+  }
+
+  get pageCount(): number {
+    return Math.ceil(this.items.length / this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return getPaginationPages(this.currentPage, this.pageCount);
   }
 
   get filamentColors(): number {

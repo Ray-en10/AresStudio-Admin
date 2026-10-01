@@ -104,7 +104,11 @@
           </tbody>
         </table>
       </div>
-      <app-pagination [totalItems]="recentOrders.length" [pageSize]="pageSize" [currentPage]="currentPage" (pageChange)="currentPage = $event" />
+      <nav *ngIf="pageCount > 1" class="table-pagination" aria-label="Recent orders pages">
+        <button type="button" aria-label="Previous page" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">‹</button>
+        <button *ngFor="let page of pageNumbers" type="button" [class.current]="page === currentPage" [attr.aria-current]="page === currentPage ? 'page' : null" [attr.aria-label]="'Page ' + page" (click)="currentPage = page">{{ page }}</button>
+        <button type="button" aria-label="Next page" [disabled]="currentPage === pageCount" (click)="currentPage = currentPage + 1">›</button>
+      </nav>
     </section>
 
     <aside class="inventory-panel" aria-labelledby="inventory-summary-heading">
