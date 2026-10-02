@@ -29,7 +29,12 @@ export class Dashboard implements OnInit {
   private readonly ordersService = inject(Orders);
   private readonly inventoryService = inject(InventoryService);
 
-  monthlyRevenue = 0;
+  get monthlyRevenue(): number {
+  const monthKey = this.monthKey(new Date());
+  return this.orders
+    .filter((order) => order.status === 'Completed' && order.orderDate?.slice(0, 7) === monthKey)
+    .reduce((sum, order) => sum + order.price, 0);
+}
   ordersError = '';
   inventoryError = '';
   loadingOrders = true;
@@ -46,10 +51,7 @@ export class Dashboard implements OnInit {
         this.ordersError = 'Orders could not be loaded from the database.';
       },
     });
-    this.ordersService.getMonthlyRevenue().subscribe({
-      next: (revenue) => this.monthlyRevenue = revenue,
-      error: () => this.ordersError = 'Monthly revenue could not be loaded from the database.',
-    });
+
     this.inventoryService.loadItems().subscribe({
       next: () => this.loadingInventory = false,
       error: () => {
