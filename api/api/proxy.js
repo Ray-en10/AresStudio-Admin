@@ -7,7 +7,9 @@ module.exports = async function handler(request, response) {
   }
 
   const incomingUrl = new URL(request.url, `https://${request.headers.host}`);
-  const upstreamUrl = `${backendUrl}${incomingUrl.pathname}${incomingUrl.search}`;
+  const path = incomingUrl.searchParams.get('path') ?? '';
+    incomingUrl.searchParams.delete('path');
+  const upstreamUrl = `${backendUrl}/api/${path}${incomingUrl.search}`;
   const headers = new Headers();
   for (const name of FORWARDED_HEADERS) {
     const value = request.headers[name];
