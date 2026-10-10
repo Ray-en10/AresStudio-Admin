@@ -36,7 +36,7 @@ public class Order {
     @Column(name = "order_date")
     private LocalDate orderDate;
 
-    @Column(name = "order_link")
+    @Column(name = "order_link", columnDefinition = "TEXT")
     private String orderLink;
 
     @Valid

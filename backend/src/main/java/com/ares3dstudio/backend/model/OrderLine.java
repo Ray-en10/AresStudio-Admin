@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 public class OrderLine {
 
     @NotBlank
-    @Column(name = "model_url", nullable = false, length = 2048)
+    @Column(name = "model_url", nullable = false, columnDefinition = "TEXT")
     private String modelUrl;
 
     @NotNull

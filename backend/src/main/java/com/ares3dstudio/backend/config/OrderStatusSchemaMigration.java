@@ -39,4 +39,21 @@ public class OrderStatusSchemaMigration {
             logger.error("Could not update the orders status constraint. CANCELLED may remain unavailable.", exception);
         }
     }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void expandOrderLinkColumns() {
+        try {
+            jdbcTemplate.execute("""
+                ALTER TABLE IF EXISTS orders
+                ALTER COLUMN order_link TYPE TEXT
+                """);
+            jdbcTemplate.execute("""
+                ALTER TABLE IF EXISTS order_items
+                ALTER COLUMN model_url TYPE TEXT
+                """);
+            logger.info("Order link columns checked; long URLs are enabled.");
+        } catch (RuntimeException exception) {
+            logger.error("Could not expand order link columns. Long URLs may remain unavailable.", exception);
+        }
+    }
 }
