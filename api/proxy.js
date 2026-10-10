@@ -1,5 +1,16 @@
 const FORWARDED_HEADERS = ['accept', 'content-type', 'cookie', 'x-xsrf-token'];
 
+async function readRequestBody(request) {
+  if (typeof request.body === 'string') return request.body;
+  if (request.body && typeof request.body === 'object' && !request.body.pipe) {
+    return JSON.stringify(request.body);
+  }
+
+  const chunks = [];
+  for await (const chunk of request) chunks.push(Buffer.from(chunk));
+  return Buffer.concat(chunks);
+}
+
 module.exports = async function handler(request, response) {
   const backendUrl = process.env.BACKEND_URL?.replace(/\/+$/, '');
   if (!backendUrl) {
@@ -18,8 +29,8 @@ module.exports = async function handler(request, response) {
   }
 
   let body;
-  if (!['GET', 'HEAD'].includes(request.method || 'GET') && request.body !== undefined) {
-    body = typeof request.body === 'string' ? request.body : JSON.stringify(request.body);
+  if (!['GET', 'HEAD'].includes(request.method || 'GET')) {
+    body = await readRequestBody(request);
   }
 
   try {

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,9 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         return orderRepository.findAll().stream()
-                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .sorted(Comparator.comparing(
+                        Order::getCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
     }
 
@@ -62,6 +65,9 @@ public class OrderController {
     // POST /api/orders -> créer une commande (formulaire "Add order")
     @PostMapping
     public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
+        if (order.getCreatedAt() == null) {
+            order.setCreatedAt(java.time.LocalDateTime.now());
+        }
         if (order.getStatus() == null) {
             order.setStatus(OrderStatus.PENDING);
         }
