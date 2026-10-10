@@ -87,6 +87,7 @@
 .status-fill--ready { background: #197c70; }
 .status-fill--picked-up { background: #4778bd; }
 .status-fill--completed { background: #57a06e; }
+.status-fill--cancelled { background: #b94b3e; }
 
 .recent-orders-panel, .inventory-panel { overflow: hidden; }
 .panel-link { flex: 0 0 auto; color: var(--accent); font-size: 0.78rem; font-weight: 700; text-decoration: none; }
@@ -101,6 +102,7 @@
 .status-pill--ready { background: #d9f2ed; color: #11685d; }
 .status-pill--picked-up { background: #e2ecfb; color: #28589d; }
 .status-pill--completed { background: #e1f2e4; color: #28673b; }
+.status-pill--cancelled { background: #fbe5e2; color: #963b32; }
 .dashboard-empty { padding: 20px 8px; color: #7b898d; font-size: 0.8rem; text-align: center; }
 .inventory-mini-row { display: flex; align-items: center; gap: 9px; padding: 11px 0; border-bottom: 1px solid #edf0f0; }
 .inventory-mini-row:last-of-type { border-bottom: 0; }

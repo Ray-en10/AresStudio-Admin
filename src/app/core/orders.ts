@@ -75,7 +75,23 @@ export class Orders {
       throw new Error(`Order ${orderId} has no backend ID`);
     }
 
-    return this.http.put<ApiOrder>(`${API_URL}/orders/${order.id}`, this.toApi({ ...order, status })).pipe(
+    return this.http.patch<ApiOrder>(`${API_URL}/orders/${order.id}/status`, { status: this.toApiStatus(status) }).pipe(
+      map((updated) => this.fromApi(updated)),
+      tap((updated) => this.orderList.update((orders) => orders.map((item) => item.id === updated.id ? updated : item))),
+    );
+  }
+
+  updateOrder(order: OrderRecord): Observable<OrderRecord> {
+    if (!order.id) throw new Error(`Order ${order.orderId} has no backend ID`);
+    return this.http.put<ApiOrder>(`${API_URL}/orders/${order.id}`, this.toApi(order)).pipe(
+      map((updated) => this.fromApi(updated)),
+      tap((updated) => this.orderList.update((orders) => orders.map((item) => item.id === updated.id ? updated : item))),
+    );
+  }
+
+  updateOrderPrice(order: OrderRecord): Observable<OrderRecord> {
+    if (!order.id) throw new Error(`Order ${order.orderId} has no backend ID`);
+    return this.http.patch<ApiOrder>(`${API_URL}/orders/${order.id}/price`, { price: order.price }).pipe(
       map((updated) => this.fromApi(updated)),
       tap((updated) => this.orderList.update((orders) => orders.map((item) => item.id === updated.id ? updated : item))),
     );
@@ -134,6 +150,7 @@ export class Orders {
       READY: 'Ready',
       PICKED_UP: 'Picked up',
       COMPLETED: 'Completed',
+      CANCELLED: 'Cancelled',
     };
     return labels[status] ?? status;
   }
@@ -144,6 +161,7 @@ export class Orders {
       Ready: 'READY',
       'Picked up': 'PICKED_UP',
       Completed: 'COMPLETED',
+      Cancelled: 'CANCELLED',
     };
     return statuses[status] ?? 'PENDING';
   }

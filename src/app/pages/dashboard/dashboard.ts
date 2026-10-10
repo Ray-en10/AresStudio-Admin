@@ -3,6 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { InventoryRecord, InventoryService } from '../../core/inventory';
 import { OrderRecord, Orders } from '../../core/orders';
+import { FinanceService, FinanceSummary } from '../../core/finance';
 import { getPaginationPages } from '../../shared/pagination/pagination';
 
 interface MonthBar {
@@ -28,11 +29,12 @@ interface StatusSummary {
 export class Dashboard implements OnInit {
   private readonly ordersService = inject(Orders);
   private readonly inventoryService = inject(InventoryService);
+  private readonly financeService = inject(FinanceService);
+  financeSummary: FinanceSummary = this.financeService.getCachedSummary() ?? { income: 0, completedRevenue: 0, expenses: 0, balance: 0 };
 
   get monthlyRevenue(): number {
-  const monthKey = this.monthKey(new Date());
   return this.orders
-    .filter((order) => order.status === 'Completed' && order.orderDate?.slice(0, 7) === monthKey)
+    .filter((order) => order.status === 'Completed')
     .reduce((sum, order) => sum + order.price, 0);
 }
   ordersError = '';
@@ -41,11 +43,11 @@ export class Dashboard implements OnInit {
   loadingInventory = true;
   currentPage = 1;
   readonly pageSize = 8;
-  readonly statusLabels = ['Pending', 'Ready', 'Picked up', 'Completed'];
+  readonly statusLabels = ['Pending', 'Ready', 'Picked up', 'Completed', 'Cancelled'];
 
   ngOnInit(): void {
     this.ordersService.loadOrders().subscribe({
-      next: () => this.loadingOrders = false,
+      next: () => { this.loadingOrders = false; this.financeSummary = { ...this.financeSummary, completedRevenue: this.monthlyRevenue }; },
       error: () => {
         this.loadingOrders = false;
         this.ordersError = 'Orders could not be loaded from the database.';
@@ -59,6 +61,15 @@ export class Dashboard implements OnInit {
         this.inventoryError = 'Inventory could not be loaded.';
       },
     });
+
+    this.financeService.getSummary().subscribe({
+      next: (summary) => this.financeSummary = summary,
+      error: () => this.financeSummary = { income: 0, completedRevenue: 0, expenses: 0, balance: 0 },
+    });
+  }
+
+  get moneyWeHave(): number {
+    return this.financeSummary.balance;
   }
 
   get orders(): OrderRecord[] {
@@ -74,7 +85,7 @@ export class Dashboard implements OnInit {
   }
 
   get activeOrders(): number {
-    return this.orders.filter((order) => order.status !== 'Completed').length;
+    return this.orders.filter((order) => order.status !== 'Completed' && order.status !== 'Cancelled').length;
   }
 
   get ordersThisMonth(): number {

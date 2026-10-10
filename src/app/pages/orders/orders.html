@@ -11,47 +11,20 @@
     </a>
   </div>
 
-  <div class="toolbar">
-    <label class="search-box">
-      <span>Search</span>
-      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="currentPage = 1" placeholder="Search by name, ID, phone, address or description" />
-    </label>
-
-    <label class="filter-box">
-      <span>Status</span>
-      <select [(ngModel)]="statusFilter" (ngModelChange)="currentPage = 1">
-        <option value="all">{{ pageMode === 'all' ? 'All statuses' : 'All in this view' }}</option>
-        <option *ngFor="let status of pageStatuses" [value]="statusKey(status)">{{ status }}</option>
-      </select>
-    </label>
-
-    <label class="filter-box">
-      <span>Sort by</span>
-      <select [(ngModel)]="sortBy" (ngModelChange)="currentPage = 1">
-        <option value="date-desc">Newest first</option>
-        <option value="date-asc">Oldest first</option>
-        <option value="name-asc">Name A–Z</option>
-        <option value="name-desc">Name Z–A</option>
-        <option value="id-asc">Order ID ↑</option>
-        <option value="id-desc">Order ID ↓</option>
-      </select>
-    </label>
-  </div>
-
   <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
 
   <div class="orders-table-wrap">
     <table class="orders-table">
       <thead>
         <tr>
-          <th>Order ID</th>
-          <th>Client</th>
-          <th>Description</th>
-          <th>Price</th>
-          <th>Order Date</th>
-          <th>Models</th>
-          <th>Status</th>
-          <th>Action</th>
+          <th><span>Order ID</span><input class="table-filter" type="search" [(ngModel)]="idFilter" (ngModelChange)="currentPage = 1" placeholder="Search ID"></th>
+          <th><span>Client</span><input class="table-filter" type="search" [(ngModel)]="clientFilter" (ngModelChange)="currentPage = 1" placeholder="Search client"></th>
+          <th><span>Description</span><input class="table-filter" type="search" [(ngModel)]="descriptionFilter" (ngModelChange)="currentPage = 1" placeholder="Search"></th>
+          <th><span>Price</span></th>
+          <th><span>Order Date</span><select class="table-filter" [(ngModel)]="sortBy" (ngModelChange)="currentPage = 1"><option value="date-desc">Newest</option><option value="date-asc">Oldest</option></select></th>
+          <th><span>Models</span></th>
+          <th><span>Status</span><select class="table-filter" [(ngModel)]="statusFilter" (ngModelChange)="currentPage = 1"><option value="all">All</option><option *ngFor="let status of pageStatuses" [value]="statusKey(status)">{{ status }}</option></select></th>
+          <th><span>Action</span></th>
         </tr>
       </thead>
       <tbody>
@@ -103,7 +76,7 @@
             <span class="status-pill" [ngClass]="statusClass(selectedOrder.status)">{{ selectedOrder.status }}</span>
           </div>
         </div>
-        <button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button>
+        <div class="modal-header-actions"><button type="button" class="edit-btn" *ngIf="!isEditing" (click)="startEditing()">Edit order</button><button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button></div>
       </div>
 
       <div class="modal-body">
@@ -116,19 +89,19 @@
         <section class="detail-section" aria-labelledby="customer-heading">
           <h3 id="customer-heading">Customer details</h3>
           <div class="detail-grid">
-            <div><span class="label">Customer</span><strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong></div>
-            <div><span class="label">Phone</span><strong>{{ selectedOrder.phone || 'Not provided' }}</strong></div>
-            <div class="full-width"><span class="label">Address</span><strong>{{ selectedOrder.address || 'Not provided' }}</strong></div>
+            <ng-container *ngIf="!isEditing; else editableCustomer"><div><span class="label">Customer</span><strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong></div><div><span class="label">Phone</span><strong>{{ selectedOrder.phone || 'Not provided' }}</strong></div><div class="full-width"><span class="label">Address</span><strong>{{ selectedOrder.address || 'Not provided' }}</strong></div></ng-container>
+            <ng-template #editableCustomer><label><span class="label">First name</span><input [(ngModel)]="selectedOrder.firstName"></label><label><span class="label">Last name</span><input [(ngModel)]="selectedOrder.lastName"></label><label><span class="label">Phone</span><input [(ngModel)]="selectedOrder.phone"></label><label class="full-width"><span class="label">Address</span><input [(ngModel)]="selectedOrder.address"></label></ng-template>
           </div>
         </section>
 
         <section class="detail-section" aria-labelledby="models-heading">
-          <h3 id="models-heading">Models and quantities</h3>
+          <div class="detail-heading-row"><h3 id="models-heading">Models and quantities</h3><button *ngIf="isEditing" type="button" class="inline-action" (click)="addOrderLine()">+ Add model</button></div>
           <div *ngIf="selectedOrder.orderItems.length" class="order-model-list">
             <div *ngFor="let item of selectedOrder.orderItems; let index = index" class="order-model-row">
               <span class="model-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-              <div class="model-link-copy"><span>Model {{ index + 1 }}</span><a [href]="item.modelUrl" target="_blank" rel="noreferrer">{{ item.modelUrl }}</a></div>
-              <span class="model-quantity">{{ item.quantity }} <small>pcs</small></span>
+              <div class="model-link-copy"><span>Model {{ index + 1 }}</span><input *ngIf="isEditing" [(ngModel)]="item.modelUrl" type="url" placeholder="https://example.com/model"><a *ngIf="!isEditing" [href]="item.modelUrl" target="_blank" rel="noreferrer">{{ item.modelUrl }}</a></div>
+              <label *ngIf="isEditing" class="model-edit-quantity">Qty<input [(ngModel)]="item.quantity" type="number" min="1"></label><span *ngIf="!isEditing" class="model-quantity">{{ item.quantity }} <small>pcs</small></span>
+              <button *ngIf="isEditing && selectedOrder.orderItems.length > 1" type="button" class="remove-line" (click)="removeOrderLine(index)" aria-label="Remove model">×</button>
             </div>
           </div>
           <p *ngIf="!selectedOrder.orderItems.length" class="dialog-muted">No model links were added.</p>
@@ -136,7 +109,7 @@
 
         <section class="detail-section order-notes" aria-labelledby="notes-heading">
           <h3 id="notes-heading">Description</h3>
-          <p>{{ selectedOrder.description || 'No description provided.' }}</p>
+          <textarea *ngIf="isEditing" [(ngModel)]="selectedOrder.description" rows="4"></textarea><p *ngIf="!isEditing">{{ selectedOrder.description || 'No description provided.' }}</p>
         </section>
 
         <section *ngIf="selectedOrder.imageData" class="detail-section image-detail-section" aria-labelledby="image-heading">
@@ -146,6 +119,7 @@
           </a>
         </section>
 
+        <div class="edit-fields" *ngIf="isEditing"><label>Order date<input type="date" [(ngModel)]="selectedOrder.orderDate"></label><label>Total price<input type="number" min="0" step="0.01" [(ngModel)]="selectedOrder.price"></label></div>
         <label class="status-editor">
           <span>Update status</span>
           <select [(ngModel)]="selectedOrder.status" [ngModelOptions]="{ standalone: true }">
@@ -153,13 +127,14 @@
             <option value="Ready">Ready</option>
             <option value="Picked up">Picked up</option>
             <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
         </label>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="delete-btn" (click)="deleteSelectedOrder()">Delete</button>
-        <button type="button" class="save-btn" (click)="saveSelectedOrderStatus()">Save changes</button>
+        <button type="button" class="save-btn" (click)="isEditing ? saveSelectedOrder() : saveSelectedOrderStatus()">{{ isSaving ? 'Saving...' : 'Save changes' }}</button>
       </div>
     </dialog>
   </div>

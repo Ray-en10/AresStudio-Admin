@@ -1,0 +1,104 @@
+.modal-header-actions{display:flex;align-items:center;gap:10px}.edit-btn{border:0;border-radius:8px;padding:8px 12px;background:#f0e5de;color:#8d4538;font-weight:700;cursor:pointer}.detail-grid input,.edit-fields input,.order-notes textarea{width:100%;box-sizing:border-box;border:1px solid #ded4ce;border-radius:8px;padding:9px;font:inherit}.edit-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}.edit-fields label{display:grid;gap:6px;font-weight:700}
+
+html.dark-theme {
+  color-scheme: dark;
+  background: #111a22;
+}
+
+html.dark-theme body {
+  background: #111a22;
+  color: #e6edf3;
+}
+
+html.dark-theme .app-shell,
+html.dark-theme .content-area {
+  background: #111a22;
+  color: #e6edf3;
+}
+
+html.dark-theme .sidebar,
+html.dark-theme .topbar,
+html.dark-theme .finance-form,
+html.dark-theme .ledger,
+html.dark-theme .chart-panel,
+html.dark-theme .stocks-panel,
+html.dark-theme .recent-orders-panel,
+html.dark-theme .inventory-panel,
+html.dark-theme .orders-table-wrap,
+html.dark-theme .modal-content,
+html.dark-theme .earned-editor {
+  background: #1a2732;
+  color: #e6edf3;
+  border-color: #304352;
+}
+
+html.dark-theme .topbar,
+html.dark-theme .sidebar {
+  border-color: #304352;
+}
+
+html.dark-theme .nav-item,
+html.dark-theme .search-result,
+html.dark-theme .logout-btn,
+html.dark-theme .icon-button {
+  color: #c8d4dd;
+  background-color: #1a2732;
+}
+
+html.dark-theme .nav-item:hover,
+html.dark-theme .search-result:hover,
+html.dark-theme .search-result:focus-visible {
+  background: #263746;
+  color: #fff;
+}
+
+html.dark-theme .nav-item.active {
+  background: #29434d;
+  color: #fff;
+}
+
+html.dark-theme .search-box,
+html.dark-theme .global-search-results {
+  background: #1a2732;
+  border-color: #304352;
+}
+
+html.dark-theme .search-box input,
+html.dark-theme .search-result,
+html.dark-theme input,
+html.dark-theme textarea,
+html.dark-theme select {
+  color: #e6edf3;
+}
+
+html.dark-theme .finance-form input:not([type='radio']),
+html.dark-theme .summary-card input,
+html.dark-theme .detail-grid input,
+html.dark-theme .edit-fields input,
+html.dark-theme .order-notes textarea {
+  background: #13202a;
+  border-color: #3a5364;
+}
+
+html.dark-theme .panel-header h4,
+html.dark-theme .finance-form h2,
+html.dark-theme .ledger h2,
+html.dark-theme .orders-table th,
+html.dark-theme .orders-table td,
+html.dark-theme .page-topbar h1 {
+  color: #e6edf3;
+}
+
+html.dark-theme .page-intro,
+html.dark-theme .finance-form > p,
+html.dark-theme .growth-heading p,
+html.dark-theme .empty,
+html.dark-theme .dialog-muted {
+  color: #9fb0bb;
+}
+
+@media (max-width: 640px) {
+  html.dark-theme .topbar {
+    background: #15222c;
+  }
+}

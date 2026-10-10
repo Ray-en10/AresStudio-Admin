@@ -18,12 +18,17 @@ export class Orders implements OnInit {
 
   pageMode: 'all' | 'ready' | 'delivered' = 'all';
   searchTerm = '';
+  clientFilter = '';
+  descriptionFilter = '';
+  idFilter = '';
   statusFilter = 'all';
   sortBy = 'date-desc';
   currentPage = 1;
   readonly pageSize = 8;
   selectedOrder: OrderRecord | null = null;
-  readonly allStatuses = ['Pending', 'Ready', 'Picked up', 'Completed'];
+  isEditing = false;
+  isSaving = false;
+  readonly allStatuses = ['Pending', 'Ready', 'Picked up', 'Completed', 'Cancelled'];
   errorMessage = '';
 
   ngOnInit(): void {
@@ -56,8 +61,12 @@ export class Orders implements OnInit {
         order.phone.toLowerCase().includes(query) ||
         order.address.toLowerCase().includes(query) ||
         order.description.toLowerCase().includes(query);
+      const matchesTableFilters =
+        (!this.idFilter.trim() || order.orderId.toLowerCase().includes(this.idFilter.trim().toLowerCase())) &&
+        (!this.clientFilter.trim() || `${order.firstName} ${order.lastName} ${order.phone} ${order.address}`.toLowerCase().includes(this.clientFilter.trim().toLowerCase())) &&
+        (!this.descriptionFilter.trim() || order.description.toLowerCase().includes(this.descriptionFilter.trim().toLowerCase()));
 
-      return matchesPage && matchesStatus && matchesSearch;
+      return matchesPage && matchesStatus && matchesSearch && matchesTableFilters;
     });
 
     return filtered.sort((a, b) => {
@@ -120,10 +129,33 @@ export class Orders implements OnInit {
 
   openOrderDetails(order: OrderRecord): void {
     this.selectedOrder = { ...order };
+    this.isEditing = false;
   }
 
   closeOrderDetails(): void {
     this.selectedOrder = null;
+    this.isEditing = false;
+  }
+
+  startEditing(): void { this.isEditing = true; }
+
+  addOrderLine(): void {
+    this.selectedOrder?.orderItems.push({ modelUrl: '', quantity: 1 });
+  }
+
+  removeOrderLine(index: number): void {
+    if (this.selectedOrder && this.selectedOrder.orderItems.length > 1) {
+      this.selectedOrder.orderItems.splice(index, 1);
+    }
+  }
+
+  saveSelectedOrder(): void {
+    if (!this.selectedOrder || this.isSaving) return;
+    this.isSaving = true;
+    this.ordersService.updateOrder(this.selectedOrder).subscribe({
+      next: (updated) => { this.selectedOrder = { ...updated }; this.isEditing = false; this.isSaving = false; },
+      error: () => { this.errorMessage = 'Could not save the order changes.'; this.isSaving = false; },
+    });
   }
 
   saveSelectedOrderStatus(): void {
@@ -133,6 +165,7 @@ export class Orders implements OnInit {
 
     this.ordersService.updateOrderStatus(this.selectedOrder.orderId, this.selectedOrder.status).subscribe({
       next: () => this.closeOrderDetails(),
+      error: () => this.errorMessage = 'Could not update the order status. Restart the backend and try again.',
     });
   }
 

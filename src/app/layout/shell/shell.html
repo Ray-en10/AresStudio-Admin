@@ -15,6 +15,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>
           <span>Equipment</span>
         </a>
+        <a class="nav-item" routerLink="/finance" routerLinkActive="active" (click)="closeMobileNavigation()">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17"/><path d="m7 15 3-4 3 2 5-7"/></svg>
+          <span>Finance</span>
+        </a>
       </div>
       <div class="nav-group">
         <p class="nav-group-label">Pages</p>
@@ -33,7 +37,11 @@
         <p class="nav-group-label">Fulfilment</p>
         <a class="nav-item" routerLink="/ready-in-stock" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-2 13H5L3 7Z"/><path d="M8 7a4 4 0 0 1 8 0"/></svg>
-          <span>Ready In Stock</span>
+          <span>Orders In Stock</span>
+        </a>
+        <a class="nav-item" routerLink="/items-in-stock" routerLinkActive="active" (click)="closeMobileNavigation()">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 15 4-4 3 3 3-2 6 5M8 9h.01"/></svg>
+          <span>Items In Stock</span>
         </a>
         <a class="nav-item" routerLink="/delivered" routerLinkActive="active" (click)="closeMobileNavigation()">
           <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
@@ -84,8 +92,13 @@
       </div>
 
       <div class="topbar__right">
-        <button class="icon-button soft notification-button" type="button" aria-label="Notifications">
+        <button class="icon-button soft notification-button" [class.notification-button--dark]="darkMode" type="button" aria-label="Notifications">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+          <span class="notification-dot" aria-hidden="true"></span>
+        </button>
+        <button class="icon-button soft theme-toggle" [class.theme-toggle--dark]="darkMode" type="button" (click)="toggleTheme()" [attr.aria-label]="darkMode ? 'Switch to light mode' : 'Switch to dark mode'" [attr.title]="darkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+          <svg *ngIf="!darkMode" class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.4A8.5 8.5 0 0 1 8.6 4 8.5 8.5 0 1 0 20 15.4Z"/></svg>
+          <svg *ngIf="darkMode" class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
         <button class="logout-btn" type="button" (click)="logout()">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M21 3v18"/></svg>

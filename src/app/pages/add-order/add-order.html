@@ -82,8 +82,12 @@
       </div>
 
       <section class="attachment-section">
-        <div class="attachment-heading"><strong>Reference image</strong><small>Optional · JPG, PNG, or WebP · up to 3 MB</small></div>
+        <div class="attachment-heading"><strong>Reference image</strong><small>Optional · drag and drop, paste, or choose · up to 3 MB</small></div>
         <input #imageFile id="order-image" class="image-file-input" type="file" accept="image/jpeg,image/png,image/webp" (change)="onImageSelected($event)" />
+        <div class="image-dropzone" (dragover)="$event.preventDefault()" (drop)="onImageDrop($event)">
+          <span>Drop or paste an image here</span>
+          <button type="button" (click)="imageFile.click()">Choose image</button>
+        </div>
         <div *ngIf="orderForm.controls.imageData.value" class="image-preview-row">
           <img [src]="orderForm.controls.imageData.value" alt="Order reference preview" />
           <button class="remove-image-btn" type="button" (click)="removeImage(imageFile)">Remove image</button>

@@ -36,6 +36,20 @@ API Spring Boot pour les commandes et l'inventaire de Ares 3D Studio.
 
 4. L'API est disponible sur `http://localhost:8080`.
 
+   Sous PowerShell, définis les variables dans le terminal avant de lancer Maven :
+
+   ```powershell
+   $env:DB_URL="jdbc:postgresql://localhost:5432/ares3dstudio"
+   $env:DB_USER="postgres"
+   $env:DB_PASSWORD="ton_mot_de_passe_postgres"
+   $env:APP_ADMIN_USERNAME="admin"
+   $env:APP_ADMIN_PASSWORD="un_mot_de_passe_local_long"
+   mvn spring-boot:run
+   ```
+
+   `DB_PASSWORD` est volontairement obligatoire : aucun mot de passe par défaut
+   ne doit être stocké dans le dépôt ou utilisé en production.
+
 ## Authentification
 
 L'authentification utilise une session HTTP côté serveur, un cookie de session `HttpOnly` et une protection CSRF. Les écritures vers les commandes et l'inventaire sont refusées sans session authentifiée.
@@ -58,14 +72,20 @@ Les sessions expirent après 30 minutes d'inactivité. En production, utilise HT
 | GET | `/api/orders/next-order-id` | Authentifié | Fournit le prochain identifiant lisible |
 | POST | `/api/orders` | Authentifié + CSRF | Crée une commande |
 | PUT | `/api/orders/{id}` | Authentifié + CSRF | Met à jour une commande |
+| PATCH | `/api/orders/{id}/status` | Authentifié + CSRF | Met à jour uniquement le statut d'une commande |
 | DELETE | `/api/orders/{id}` | Authentifié + CSRF | Supprime une commande |
 | GET | `/api/orders/stats/monthly-revenue` | Authentifié | Total du mois courant |
 | GET | `/api/inventory` | Authentifié | Liste les fournitures |
 | POST | `/api/inventory` | Authentifié + CSRF | Ajoute une fourniture |
 | PUT | `/api/inventory/{id}` | Authentifié + CSRF | Met à jour une fourniture |
 | DELETE | `/api/inventory/{id}` | Authentifié + CSRF | Supprime une fourniture |
+| GET | `/api/stock-products` | Authentifié | Liste les pièces disponibles à la vente |
+| POST/PUT/DELETE | `/api/stock-products/{id}` | Authentifié + CSRF | Gère les cartes de pièces en stock |
+| GET | `/api/finance` | Authentifié | Liste les entrées financières |
+| GET/PUT | `/api/finance/summary` | Authentifié + CSRF pour PUT | Retourne ou modifie revenus, dépenses et solde; les commandes terminées sont incluses dans les revenus |
+| POST/DELETE | `/api/finance/{id}` | Authentifié + CSRF | Ajoute ou supprime une entrée financière |
 
-Les statuts de commande disponibles sont `PENDING`, `READY`, `PICKED_UP` et `COMPLETED`.
+Les statuts de commande disponibles sont `PENDING`, `READY`, `PICKED_UP`, `COMPLETED` et `CANCELLED`.
 
 ## CORS
 

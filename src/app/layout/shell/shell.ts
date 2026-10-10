@@ -27,6 +27,7 @@ function isNarrowViewport(): boolean {
   styleUrl: './shell.css',
 })
 export class Shell implements OnInit {
+  private readonly themeStorageKey = 'ares3d-theme-v2';
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly ordersService = inject(Orders);
@@ -38,9 +39,15 @@ export class Shell implements OnInit {
   searchFocused = false;
   searchLoading = true;
   isNavigating = signal(false);
+  darkMode = false;
   private navigationTimer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit(): void {
+    // Start new browser sessions in light mode. A choice made with this
+    // version is then remembered on later visits.
+    this.darkMode = typeof localStorage !== 'undefined' &&
+      localStorage.getItem(this.themeStorageKey) === 'dark';
+    this.applyTheme();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         if (this.navigationTimer) clearTimeout(this.navigationTimer);
@@ -50,6 +57,7 @@ export class Shell implements OnInit {
           this.navigationTimer = null;
         }, 1200);
       }
+
     });
 
     let requestsComplete = 0;
@@ -59,6 +67,18 @@ export class Shell implements OnInit {
     };
     this.ordersService.loadOrders().subscribe({ next: finishRequest, error: finishRequest });
     this.inventoryService.loadItems().subscribe({ next: finishRequest, error: finishRequest });
+  }
+
+  toggleTheme(): void {
+    this.darkMode = !this.darkMode;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.themeStorageKey, this.darkMode ? 'dark' : 'light');
+    }
+    this.applyTheme();
+  }
+
+  private applyTheme(): void {
+    if (typeof document !== 'undefined') document.documentElement.classList.toggle('dark-theme', this.darkMode);
   }
 
   get searchResults(): GlobalSearchResult[] {

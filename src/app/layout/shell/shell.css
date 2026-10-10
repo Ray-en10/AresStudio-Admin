@@ -209,6 +209,78 @@ input {
   background: rgba(246, 247, 250, 0.95);
 }
 
+.notification-button {
+  position: relative;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.notification-button:hover {
+  transform: translateY(-1px);
+  background: #fff;
+  color: #14796e;
+  border-color: rgba(20, 121, 110, 0.28);
+  box-shadow: 0 6px 14px rgba(31, 41, 55, 0.12);
+}
+
+.notification-button--dark {
+  background: #26394a !important;
+  color: #d7f4ff;
+  border-color: #526d7e;
+}
+
+.notification-button--dark:hover {
+  background: #30495a !important;
+  color: #fff;
+  border-color: #7ca7b8;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.26);
+}
+
+.notification-button--dark svg {
+  filter: drop-shadow(0 0 3px rgba(215, 244, 255, 0.28));
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid #f6f7fa;
+  border-radius: 50%;
+  background: #ef8d69;
+}
+
+.notification-button--dark .notification-dot {
+  border-color: #26394a;
+  background: #ffd166;
+}
+
+.theme-toggle {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px) rotate(8deg);
+  box-shadow: 0 6px 14px rgba(31, 41, 55, 0.14);
+}
+
+.theme-toggle--dark {
+  background: #26394a !important;
+  color: #ffd166;
+  border-color: rgba(255, 209, 102, 0.35);
+}
+
+.theme-icon {
+  animation: theme-icon-in 180ms ease-out;
+}
+
+@keyframes theme-icon-in {
+  from { opacity: 0; transform: scale(0.65) rotate(-25deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
 .icon-button svg {
   width: 19px;
   height: 19px;

@@ -7,6 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,10 +21,13 @@ import java.util.Map;
 @RequestMapping("/api/orders")
 public class OrderController {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
     private final OrderRepository orderRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public OrderController(OrderRepository orderRepository) {
+    public OrderController(OrderRepository orderRepository, JdbcTemplate jdbcTemplate) {
         this.orderRepository = orderRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // GET /api/orders -> liste toutes les commandes (les plus récentes en premier)
@@ -87,6 +93,45 @@ public class OrderController {
                         existing.setImageData(updated.getImageData());
                     existing.setPrice(updated.getPrice());
                     existing.setStatus(updated.getStatus());
+                    return ResponseEntity.ok(orderRepository.save(existing));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        final OrderStatus status;
+        try {
+            String requestedStatus = payload.get("status");
+            status = OrderStatus.valueOf(requestedStatus == null ? "" : requestedStatus.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!orderRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            int updated = jdbcTemplate.update("UPDATE orders SET status = ? WHERE id = ?", status.name(), id);
+            if (updated == 0) {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (RuntimeException exception) {
+            logger.error("Could not update order {} to status {}", id, status, exception);
+            return ResponseEntity.internalServerError().build();
+        }
+        return orderRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<Order> updateOrderPrice(@PathVariable Long id, @RequestBody Map<String, BigDecimal> payload) {
+        BigDecimal price = payload.get("price");
+        if (price == null || price.signum() < 0) return ResponseEntity.badRequest().build();
+        return orderRepository.findById(id)
+                .map(existing -> {
+                    existing.setPrice(price);
                     return ResponseEntity.ok(orderRepository.save(existing));
                 })
                 .orElse(ResponseEntity.notFound().build());

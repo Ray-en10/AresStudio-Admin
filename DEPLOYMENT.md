@@ -26,6 +26,7 @@ Do not commit database passwords or database dumps. GitHub stores the applicatio
    - `DB_PASSWORD`: database password
    - `APP_ADMIN_USERNAME`: your chosen login name
    - `APP_ADMIN_PASSWORD`: a long, unique password
+   - `APP_CORS_ALLOWED_ORIGIN_PATTERNS`: the exact HTTPS URL of the Vercel frontend
 3. Keep `SESSION_COOKIE_SECURE=true` for HTTPS. Render supplies `PORT`; the Spring app binds to it.
 4. Wait for Render's health check at `/api/auth/csrf` to pass. Copy the service's public base URL, for example `https://ares3dstudio-api.onrender.com`. Do not add `/api` to this value.
 

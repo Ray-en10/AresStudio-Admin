@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { OrderLineRecord, OrderRecord, Orders as OrdersService } from '../../core/orders';
@@ -61,18 +61,27 @@ export class AddOrder implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+    this.readImage(file);
+    input.value = '';
+  }
 
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      this.errorMessage = 'Choose a JPG, PNG, or WebP image.';
-      input.value = '';
+  onImageDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.readImage(file);
+  }
+
+  @HostListener('paste', ['$event'])
+  onPaste(event: ClipboardEvent): void {
+    const file = Array.from(event.clipboardData?.files ?? [])[0];
+    if (file) this.readImage(file);
+  }
+
+  private readImage(file: File): void {
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 3 * 1024 * 1024) {
+      this.errorMessage = 'Choose a JPG, PNG, or WebP image up to 3 MB.';
       return;
     }
-    if (file.size > 3 * 1024 * 1024) {
-      this.errorMessage = 'The image must be 3 MB or smaller.';
-      input.value = '';
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === 'string') {

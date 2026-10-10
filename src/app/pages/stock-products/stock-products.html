@@ -1,0 +1,36 @@
+<section class="stock-page">
+  <header class="page-topbar">
+    <div>
+      <p class="eyebrow">Fulfilment</p>
+      <h1>Items In Stock</h1>
+      <p class="stock-intro">Manage finished pieces that are ready for customers.</p>
+    </div>
+  </header>
+  <div class="stock-layout">
+    <section class="stock-form-panel">
+      <div class="section-heading"><h2>{{ editing ? 'Edit item' : 'Add item' }}</h2><p>Name, presentation, price, and date</p></div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <label>Name<input formControlName="name" placeholder="e.g. Custom planter"></label>
+        <label>Description<textarea rows="4" formControlName="description" placeholder="Short description"></textarea></label>
+        <div class="field-row"><label>Price<input type="number" min="0" step="0.01" formControlName="price"></label><label>Date<input type="date" formControlName="productDate"></label></div>
+        <div class="dropzone" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+          <input #fileInput type="file" accept="image/*" (change)="handleImage($event)">
+          <strong>Drop or paste an image</strong><span>or choose a file · up to 3 MB</span>
+          <img *ngIf="form.controls.imageData.value" [src]="form.controls.imageData.value" alt="Preview">
+        </div>
+        <p *ngIf="errorMessage" class="error" role="alert">{{ errorMessage }}</p>
+        <div class="form-actions"><button type="button" class="secondary" *ngIf="editing" (click)="cancel()">Cancel</button><button class="primary" type="submit" [disabled]="isSaving">{{ isSaving ? 'Saving...' : editing ? 'Save changes' : 'Add to stock' }}</button></div>
+      </form>
+    </section>
+    <section class="catalogue">
+      <div class="catalogue-toolbar"><h2>{{ products.length }} items</h2><input [(ngModel)]="searchTerm" placeholder="Search stock"></div>
+      <div class="product-grid">
+        <article class="product-card" *ngFor="let item of products">
+          <div class="product-image"><img *ngIf="item.imageData; else placeholder" [src]="item.imageData" [alt]="item.name"><ng-template #placeholder><span>3D</span></ng-template></div>
+          <div class="product-copy"><div class="product-meta"><span>{{ item.productDate }}</span><strong>{{ item.price | currency:'TND':'symbol':'1.0-2' }}</strong></div><h3>{{ item.name }}</h3><p>{{ item.description || 'No description added.' }}</p><div class="card-actions"><button type="button" (click)="edit(item)">Edit</button><button type="button" class="danger" (click)="remove(item)">Delete</button></div></div>
+        </article>
+      </div>
+      <p *ngIf="!products.length" class="empty">No items in stock yet. Add the first finished piece.</p>
+    </section>
+  </div>
+</section>
