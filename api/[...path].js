@@ -6,11 +6,11 @@ module.exports = async function handler(request, response) {
     return response.status(503).json({ message: 'BACKEND_URL is not configured.' });
   }
 
-  const incomingUrl = new URL(request.url, `https://${request.headers.host}`);
-  const path = incomingUrl.searchParams.get('path') ?? '';
-    incomingUrl.searchParams.delete('path');
-  const upstreamUrl = `${backendUrl}/api/${path}${incomingUrl.search}`;
+  const requestUrl = new URL(request.url, `https://${request.headers.host}`);
+  const apiPath = requestUrl.pathname.replace(/^\/api\/?/, '');
+  const upstreamUrl = `${backendUrl}/api/${apiPath}${requestUrl.search}`;
   const headers = new Headers();
+
   for (const name of FORWARDED_HEADERS) {
     const value = request.headers[name];
     if (typeof value === 'string') headers.set(name, value);
