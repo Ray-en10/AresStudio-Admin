@@ -27,7 +27,7 @@ export class AddOrder implements OnInit {
     price: [0, [Validators.required, Validators.min(0)]],
     orderDate: [this.todayString(), Validators.required],
     orderLines: this.fb.array([this.createOrderLine()]),
-    imageData: [''],
+    imageData: this.fb.nonNullable.control<string[]>([]),
     status: ['Pending', Validators.required],
   });
 
@@ -59,22 +59,20 @@ export class AddOrder implements OnInit {
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.readImage(file);
+    const files = Array.from(input.files ?? []);
+    if (!files.length) return;
+    files.forEach((file) => this.readImage(file));
     input.value = '';
   }
 
   onImageDrop(event: DragEvent): void {
     event.preventDefault();
-    const file = event.dataTransfer?.files?.[0];
-    if (file) this.readImage(file);
+    Array.from(event.dataTransfer?.files ?? []).forEach((file) => this.readImage(file));
   }
 
   @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent): void {
-    const file = Array.from(event.clipboardData?.files ?? [])[0];
-    if (file) this.readImage(file);
+    Array.from(event.clipboardData?.files ?? []).forEach((file) => this.readImage(file));
   }
 
   private readImage(file: File): void {
@@ -82,10 +80,12 @@ export class AddOrder implements OnInit {
       this.errorMessage = 'Choose a JPG, PNG, or WebP image up to 3 MB.';
       return;
     }
+
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        this.orderForm.controls.imageData.setValue(reader.result);
+        const images = this.orderForm.controls.imageData.value;
+        this.orderForm.controls.imageData.setValue([...images, reader.result]);
         this.errorMessage = '';
       }
     };
@@ -93,8 +93,31 @@ export class AddOrder implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  removeImage(input: HTMLInputElement): void {
-    this.orderForm.controls.imageData.setValue('');
+  onModelFileSelected(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      this.errorMessage = 'Choose a model file up to 10 MB.';
+      input.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        this.orderLines.at(index).controls.modelUrl.setValue(reader.result);
+        this.errorMessage = '';
+      }
+    };
+    reader.onerror = () => this.errorMessage = 'Could not read this model file. Try another file.';
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  removeImageAt(index: number, input: HTMLInputElement): void {
+    this.orderForm.controls.imageData.setValue(
+      this.orderForm.controls.imageData.value.filter((_, imageIndex) => imageIndex !== index),
+    );
     input.value = '';
   }
 
@@ -141,7 +164,7 @@ export class AddOrder implements OnInit {
 
   private createOrderLine() {
     return this.fb.nonNullable.group({
-      modelUrl: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/i)]],
+      modelUrl: ['', [Validators.required, Validators.pattern(/^(https?:\/\/|data:).+/i)]],
       quantity: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]],
     });
   }

@@ -153,14 +153,14 @@ body {
 
 html.dark-theme {
   color-scheme: dark;
-  background: #101820;
+  background: #171a1d;
 }
 
 html.dark-theme body,
 html.dark-theme .app-shell,
 html.dark-theme .content-area {
-  background: #101820;
-  color: #e7eef3;
+  background: #171a1d;
+  color: #edf1f2;
 }
 
 html.dark-theme .sidebar,
@@ -173,9 +173,9 @@ html.dark-theme .recent-orders-panel,
 html.dark-theme .inventory-panel,
 html.dark-theme .orders-table-wrap,
 html.dark-theme .earned-editor {
-  background: #1a2934;
-  color: #e7eef3;
-  border-color: #344b5a;
+  background: #202529;
+  color: #edf1f2;
+  border-color: #3b4448;
 }
 
 html.dark-theme .sidebar,
@@ -186,20 +186,20 @@ html.dark-theme .topbar {
 html.dark-theme .nav-item,
 html.dark-theme .logout-btn,
 html.dark-theme .icon-button {
-  color: #cbd8e0;
-  background-color: #1a2934;
+  color: #d3dcde;
+  background-color: #202529;
 }
 
 html.dark-theme .nav-item:hover,
 html.dark-theme .nav-item.active {
-  background: #29424e;
+  background: #34433f;
   color: #fff;
 }
 
 html.dark-theme .search-box,
 html.dark-theme .global-search-results {
-  background: #1a2934;
-  border-color: #344b5a;
+  background: #202529;
+  border-color: #3b4448;
 }
 
 html.dark-theme .search-box input,
@@ -252,6 +252,552 @@ html.dark-theme .growth-area {
 html.dark-theme .growth-dot {
   fill: #b9fff1;
   stroke: #1a2934;
+}
+
+html.dark-theme .page-shell,
+html.dark-theme .orders-page,
+html.dark-theme .dashboard-page,
+html.dark-theme .inventory-page,
+html.dark-theme .stock-page,
+html.dark-theme .finance-page {
+  color: #edf3f5;
+}
+
+html.dark-theme .page-shell h1,
+html.dark-theme .orders-page h1,
+html.dark-theme .dashboard-page h1,
+html.dark-theme .inventory-page h1,
+html.dark-theme .stock-page h1,
+html.dark-theme .finance-page h1,
+html.dark-theme .page-shell h2,
+html.dark-theme .orders-page h2,
+html.dark-theme .dashboard-page h2,
+html.dark-theme .inventory-page h2,
+html.dark-theme .stock-page h2,
+html.dark-theme .finance-page h2,
+html.dark-theme .page-shell h3,
+html.dark-theme .orders-page h3 {
+  color: #edf3f5;
+}
+
+html.dark-theme .page-shell *,
+html.dark-theme .orders-page *,
+html.dark-theme .dashboard-page *,
+html.dark-theme .inventory-page *,
+html.dark-theme .stock-page *,
+html.dark-theme .finance-page * {
+  border-color: #3f484c;
+}
+
+html.dark-theme .page-shell .field-row label,
+html.dark-theme .page-shell .model-line label,
+html.dark-theme .page-shell .section-heading p,
+html.dark-theme .page-shell .attachment-heading small,
+html.dark-theme .page-shell .model-section-heading small,
+html.dark-theme .orders-page .label,
+html.dark-theme .orders-page .status-editor,
+html.dark-theme .orders-page .model-link-copy > span,
+html.dark-theme .orders-page .detail-section p {
+  color: #b8c4c6 !important;
+}
+
+html.dark-theme .page-shell .section-heading h2,
+html.dark-theme .page-shell .model-section-heading strong,
+html.dark-theme .page-shell .attachment-heading strong,
+html.dark-theme .page-shell .order-card .recent-customer,
+html.dark-theme .orders-page .detail-section h3,
+html.dark-theme .orders-page .detail-grid strong {
+  color: #f0f4f4 !important;
+}
+
+html.dark-theme .form-panel,
+html.dark-theme .orders-panel,
+html.dark-theme .stat-card,
+html.dark-theme .dashboard-panel,
+html.dark-theme .inventory-summary,
+html.dark-theme .inventory-layout,
+html.dark-theme .stock-form-panel,
+html.dark-theme .product-card,
+html.dark-theme .summary-card,
+html.dark-theme .finance-layout,
+html.dark-theme .order-modal {
+  background: #252a2e;
+  border-color: #414a4e;
+  color: #edf3f5;
+}
+
+html.dark-theme .orders-table,
+html.dark-theme .recent-table,
+html.dark-theme .inventory-table {
+  color: #edf3f5;
+}
+
+html.dark-theme .orders-table th,
+html.dark-theme .recent-table th,
+html.dark-theme .inventory-table th {
+  background: #303639;
+  color: #dce6ea;
+  border-color: #485158;
+}
+
+html.dark-theme .orders-table td,
+html.dark-theme .recent-table td,
+html.dark-theme .inventory-table td,
+html.dark-theme .orders-table tbody tr:hover,
+html.dark-theme .recent-table tbody tr:hover,
+html.dark-theme .inventory-table tbody tr:hover {
+  color: #d4dfe3;
+  border-color: #3f484f;
+  background: #252a2e;
+}
+
+html.dark-theme .table-filter,
+html.dark-theme .order-form input,
+html.dark-theme .order-form textarea,
+html.dark-theme .status-editor select,
+html.dark-theme .detail-grid input,
+html.dark-theme .edit-fields input,
+html.dark-theme .order-notes textarea,
+html.dark-theme .finance-form input,
+html.dark-theme .finance-form select,
+html.dark-theme .finance-form textarea,
+html.dark-theme .inventory-search input,
+html.dark-theme .stock-form-panel input,
+html.dark-theme .stock-form-panel textarea,
+html.dark-theme .stock-form-panel select {
+  background: #1b1f22;
+  color: #f0f5f6;
+  border-color: #56616a;
+}
+
+html.dark-theme .field-row label,
+html.dark-theme .model-line label,
+html.dark-theme .status-editor,
+html.dark-theme .label,
+html.dark-theme .customer-meta,
+html.dark-theme .orders-intro,
+html.dark-theme .page-intro,
+html.dark-theme .order-card p,
+html.dark-theme .order-card small,
+html.dark-theme .detail-section p,
+html.dark-theme .dialog-muted,
+html.dark-theme .empty-recent {
+  color: #afbdc4;
+}
+
+html.dark-theme .order-card,
+html.dark-theme .model-line,
+html.dark-theme .order-model-row,
+html.dark-theme .summary-card,
+html.dark-theme .detail-section {
+  background: #2b3033;
+  border-color: #485158;
+}
+
+html.dark-theme .order-summary-strip {
+  background: #303b3d;
+  border-color: #536466;
+}
+
+html.dark-theme .order-summary-strip span,
+html.dark-theme .order-summary-strip strong,
+html.dark-theme .detail-grid strong,
+html.dark-theme .customer-name,
+html.dark-theme .order-card .recent-customer {
+  color: #edf3f5;
+}
+
+html.dark-theme .table-pagination button {
+  background: #252b30;
+  color: #dce6ea;
+  border-color: #56616a;
+}
+
+html.dark-theme .modal-backdrop {
+  background: rgba(9, 11, 12, 0.78);
+}
+
+/* Dashboard metrics keep their original accent colors in dark mode. */
+html.dark-theme .dashboard-page .stat-card--purple {
+  background: linear-gradient(135deg, #197c70, #299385);
+  color: #fff;
+}
+
+html.dark-theme .dashboard-page .stat-card--blue {
+  background: linear-gradient(135deg, #8e3f32, #713329);
+  color: #fff;
+}
+
+html.dark-theme .dashboard-page .stat-card--white {
+  background: #252a2e;
+  border-color: #59656a;
+  color: #f4f7f7;
+}
+
+html.dark-theme .dashboard-page .stat-card--white .stat-icon {
+  background: #e6f3ef;
+  color: #197c70;
+}
+
+/* Make dashboard copy and tables readable against graphite surfaces. */
+html.dark-theme .dashboard-page .dashboard-heading h1,
+html.dark-theme .dashboard-page .panel-header h4,
+html.dark-theme .dashboard-page .recent-table td,
+html.dark-theme .dashboard-page .recent-table td strong,
+html.dark-theme .dashboard-page .inventory-mini-name strong,
+html.dark-theme .dashboard-page .inventory-mini-quantity,
+html.dark-theme .dashboard-page .status-summary-label,
+html.dark-theme .dashboard-page .status-summary-label strong {
+  color: #f0f5f5;
+}
+
+html.dark-theme .dashboard-page .dashboard-heading p,
+html.dark-theme .dashboard-page .panel-header p,
+html.dark-theme .dashboard-page .chart-note,
+html.dark-theme .dashboard-page .month-count,
+html.dark-theme .dashboard-page .month-label,
+html.dark-theme .dashboard-page .inventory-mini-name small,
+html.dark-theme .dashboard-page .dashboard-empty {
+  color: #c1cdcf;
+}
+
+html.dark-theme .dashboard-page .recent-table th {
+  background: #394247;
+  border-color: #58656a;
+  color: #f0f5f5;
+}
+
+html.dark-theme .dashboard-page .recent-table td {
+  background: #2d3438;
+  border-color: #4b575c;
+}
+
+html.dark-theme .dashboard-page .recent-table tbody tr:hover td {
+  background: #374146;
+}
+
+html.dark-theme .dashboard-page .inventory-mini-row {
+  border-color: #4b575c;
+}
+
+html.dark-theme .dashboard-page .status-track {
+  background: #475257;
+}
+
+html.dark-theme .dashboard-page .chart-figure {
+  background: #2a3135;
+}
+
+html.dark-theme .dashboard-page .chart-grid {
+  background-image: linear-gradient(rgba(190, 207, 208, 0.16) 1px, transparent 1px);
+}
+
+/* Shared pages: headings, labels, and table content stay high contrast. */
+html.dark-theme .orders-page .page-topbar h1,
+html.dark-theme .orders-page .orders-table td,
+html.dark-theme .orders-page .customer-name,
+html.dark-theme .orders-page .customer-meta,
+html.dark-theme .orders-page .description-cell,
+html.dark-theme .orders-page .orders-table a,
+html.dark-theme .orders-page .orders-table th {
+  color: #edf4f4;
+}
+
+html.dark-theme .orders-page .orders-table th {
+  background: #394247;
+}
+
+html.dark-theme .orders-page .orders-table td {
+  background: #2d3438;
+  border-color: #4b575c;
+}
+
+html.dark-theme .orders-page .orders-table tbody tr:hover td {
+  background: #374146;
+}
+
+/* Modal copy remains readable in dark mode, including every detail label/value. */
+html.dark-theme .order-modal,
+html.dark-theme .order-modal h2,
+html.dark-theme .order-modal h3,
+html.dark-theme .order-modal strong,
+html.dark-theme .order-modal .label,
+html.dark-theme .order-modal .model-link-copy > span,
+html.dark-theme .order-modal .model-link-copy a,
+html.dark-theme .order-modal .model-quantity,
+html.dark-theme .order-modal .model-quantity small,
+html.dark-theme .order-modal .order-notes p,
+html.dark-theme .order-modal .dialog-muted,
+html.dark-theme .order-modal .status-editor,
+html.dark-theme .order-modal .detail-section p {
+  color: #f1f6f6 !important;
+}
+
+html.dark-theme .order-modal .label,
+html.dark-theme .order-modal .model-link-copy > span,
+html.dark-theme .order-modal .model-quantity small,
+html.dark-theme .order-modal .detail-section p {
+  color: #c2ced0 !important;
+}
+
+html.dark-theme .order-modal .detail-section,
+html.dark-theme .order-modal .edit-fields {
+  background: #2b3033;
+  border-color: #4a565b;
+}
+
+html.dark-theme .order-modal .order-model-row {
+  background: #252a2e;
+  border-color: #4a565b;
+}
+
+/* Consistent dashboard-style page titles across all dark-mode pages. */
+html.dark-theme .finance-page .page-topbar h1,
+html.dark-theme .inventory-page .inventory-header h1,
+html.dark-theme .stock-page .page-topbar h1 {
+  margin-top: 0.25rem;
+  color: #f1f6f6 !important;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+html.dark-theme .finance-page .eyebrow,
+html.dark-theme .inventory-page .inventory-eyebrow,
+html.dark-theme .stock-page .eyebrow {
+  color: #43b8a5 !important;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+html.dark-theme .finance-page .page-intro,
+html.dark-theme .inventory-page .inventory-intro,
+html.dark-theme .stock-page .stock-intro {
+  color: #c2ced0 !important;
+  font-size: 0.88rem;
+}
+
+/* Equipment / inventory: dark cards, controls, table, and readable metadata. */
+html.dark-theme .inventory-page .inventory-summary,
+html.dark-theme .inventory-page .stock-section,
+html.dark-theme .inventory-page .add-stock-section {
+  background: #252a2e;
+  border-color: #48545a;
+}
+
+html.dark-theme .inventory-page .summary-item span,
+html.dark-theme .inventory-page .summary-item small,
+html.dark-theme .inventory-page .category-label,
+html.dark-theme .inventory-page .color-value,
+html.dark-theme .inventory-page .stock-footnote,
+html.dark-theme .inventory-page .merge-note,
+html.dark-theme .inventory-page .form-field > span:first-child {
+  color: #c2ced0 !important;
+}
+
+html.dark-theme .inventory-page .summary-item strong,
+html.dark-theme .inventory-page .stock-section-header h2,
+html.dark-theme .inventory-page .inventory-table td,
+html.dark-theme .inventory-page .inventory-table td strong {
+  color: #f1f6f6 !important;
+}
+
+html.dark-theme .inventory-page .inventory-search,
+html.dark-theme .inventory-page .filter-select,
+html.dark-theme .inventory-page .form-field input,
+html.dark-theme .inventory-page .form-field select,
+html.dark-theme .inventory-page .color-input-wrap {
+  background: #1b1f22;
+  border-color: #59666b;
+  color: #f1f6f6;
+}
+
+html.dark-theme .inventory-page .inventory-search input,
+html.dark-theme .inventory-page .filter-select select,
+html.dark-theme .inventory-page .form-field input,
+html.dark-theme .inventory-page .form-field select {
+  color: #f1f6f6;
+}
+
+html.dark-theme .inventory-page .inventory-table th {
+  background: #394247;
+  border-color: #59666b;
+  color: #f1f6f6;
+}
+
+html.dark-theme .inventory-page .inventory-table td {
+  background: #2d3438;
+  border-color: #4b575c;
+}
+
+html.dark-theme .inventory-page .inventory-table tbody tr:hover td {
+  background: #374146;
+}
+
+html.dark-theme .inventory-page .quantity-controls button,
+html.dark-theme .inventory-page .item-count {
+  background: #394247;
+  border-color: #647177;
+  color: #f1f6f6;
+}
+
+/* Finance: retain its three accent cards while making the rest graphite and clear. */
+html.dark-theme .finance-page .finance-form,
+html.dark-theme .finance-page .ledger,
+html.dark-theme .finance-page .earned-editor {
+  background: #252a2e;
+  border-color: #48545a;
+  color: #f1f6f6;
+}
+
+html.dark-theme .finance-page .finance-form h2,
+html.dark-theme .finance-page .ledger h2,
+html.dark-theme .finance-page .earned-editor h2,
+html.dark-theme .finance-page .finance-form label,
+html.dark-theme .finance-page .ledger-row strong {
+  color: #f1f6f6 !important;
+}
+
+html.dark-theme .finance-page .finance-form > p,
+html.dark-theme .finance-page .growth-heading p,
+html.dark-theme .finance-page .ledger-row small,
+html.dark-theme .finance-page .empty {
+  color: #c2ced0 !important;
+}
+
+html.dark-theme .finance-page .finance-form input,
+html.dark-theme .finance-page .earned-order input {
+  background: #1b1f22;
+  border-color: #59666b;
+  color: #f1f6f6;
+}
+
+html.dark-theme .finance-page .toggle label {
+  background: #394247;
+  color: #f1f6f6;
+}
+
+html.dark-theme .finance-page .ledger-row {
+  border-color: #4b575c;
+}
+
+/* Items in stock: make both the editor and catalogue feel like the dashboard. */
+html.dark-theme .stock-page .stock-form-panel,
+html.dark-theme .stock-page .catalogue {
+  background: #252a2e;
+  border-color: #48545a;
+  color: #f1f6f6;
+}
+
+html.dark-theme .stock-page .section-heading h2,
+html.dark-theme .stock-page .catalogue-toolbar h2,
+html.dark-theme .stock-page .stock-form-panel label,
+html.dark-theme .stock-page .product-copy h3 {
+  color: #f1f6f6 !important;
+}
+
+html.dark-theme .stock-page .section-heading p,
+html.dark-theme .stock-page .product-copy p,
+html.dark-theme .stock-page .product-meta,
+html.dark-theme .stock-page .empty {
+  color: #c2ced0 !important;
+}
+
+html.dark-theme .stock-page .stock-form-panel input,
+html.dark-theme .stock-page .stock-form-panel textarea,
+html.dark-theme .stock-page .catalogue-toolbar input {
+  background: #1b1f22;
+  border-color: #59666b;
+  color: #f1f6f6;
+}
+
+html.dark-theme .stock-page .dropzone {
+  background: #30393d;
+  border-color: #5aa99a;
+  color: #c2ced0;
+}
+
+html.dark-theme .stock-page .product-card {
+  background: #2d3438;
+  border-color: #4b575c;
+}
+
+html.dark-theme .stock-page .product-image {
+  background: linear-gradient(135deg, #465052, #2b3838);
+}
+
+html.dark-theme .stock-page .secondary,
+html.dark-theme .stock-page .card-actions button {
+  background: #394247;
+  color: #f1f6f6;
+}
+
+.detail-grid > label,
+.edit-fields > label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.is-editing .detail-section {
+  padding: 16px;
+  border: 1px solid #e2e9e7;
+  border-radius: 9px;
+  background: #fbfdfc;
+}
+
+.is-editing .detail-section h3 {
+  margin-bottom: 14px;
+  font-size: 0.9rem;
+}
+
+.is-editing .detail-grid {
+  gap: 13px;
+}
+
+.is-editing .detail-grid input,
+.is-editing .edit-fields input,
+.is-editing .order-notes textarea,
+.is-editing .status-editor select {
+  min-height: 42px;
+  padding: 10px 11px;
+  border: 1px solid #d6e1de;
+  border-radius: 7px;
+  background: #fff;
+  color: #202c31;
+  font: inherit;
+  outline: 0;
+}
+
+.is-editing .detail-grid input:focus,
+.is-editing .edit-fields input:focus,
+.is-editing .order-notes textarea:focus,
+.is-editing .status-editor select:focus {
+  border-color: #5aa99a;
+  box-shadow: 0 0 0 3px rgba(20, 104, 94, 0.12);
+}
+
+.is-editing .order-model-row {
+  padding: 13px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.edit-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  padding: 16px;
+  border: 1px solid #e2e9e7;
+  border-radius: 9px;
+  background: #fbfdfc;
+}
+
+@media (max-width: 540px) {
+  .edit-fields {
+    grid-template-columns: 1fr;
+  }
 }
 
 .route-loading-overlay {

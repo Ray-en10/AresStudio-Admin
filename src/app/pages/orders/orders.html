@@ -67,7 +67,7 @@
   </nav>
 
   <div class="modal-backdrop" *ngIf="selectedOrder">
-    <dialog open class="order-modal" aria-labelledby="order-modal-heading" (keydown.escape)="closeOrderDetails()">
+    <dialog open class="order-modal" [class.is-editing]="isEditing" aria-labelledby="order-modal-heading" (keydown.escape)="closeOrderDetails()">
       <div class="modal-header">
         <div>
           <p class="eyebrow">Order record</p>
@@ -76,7 +76,13 @@
             <span class="status-pill" [ngClass]="statusClass(selectedOrder.status)">{{ selectedOrder.status }}</span>
           </div>
         </div>
-        <div class="modal-header-actions"><button type="button" class="edit-btn" *ngIf="!isEditing" (click)="startEditing()">Edit order</button><button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button></div>
+        <div class="modal-header-actions">
+          <button type="button" class="edit-btn" *ngIf="!isEditing" (click)="startEditing()">
+            <span aria-hidden="true">✎</span>
+            Edit order
+          </button>
+          <button type="button" class="close-btn" (click)="closeOrderDetails()" aria-label="Close order details">×</button>
+        </div>
       </div>
 
       <div class="modal-body">
@@ -89,8 +95,17 @@
         <section class="detail-section" aria-labelledby="customer-heading">
           <h3 id="customer-heading">Customer details</h3>
           <div class="detail-grid">
-            <ng-container *ngIf="!isEditing; else editableCustomer"><div><span class="label">Customer</span><strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong></div><div><span class="label">Phone</span><strong>{{ selectedOrder.phone || 'Not provided' }}</strong></div><div class="full-width"><span class="label">Address</span><strong>{{ selectedOrder.address || 'Not provided' }}</strong></div></ng-container>
-            <ng-template #editableCustomer><label><span class="label">First name</span><input [(ngModel)]="selectedOrder.firstName"></label><label><span class="label">Last name</span><input [(ngModel)]="selectedOrder.lastName"></label><label><span class="label">Phone</span><input [(ngModel)]="selectedOrder.phone"></label><label class="full-width"><span class="label">Address</span><input [(ngModel)]="selectedOrder.address"></label></ng-template>
+            <ng-container *ngIf="!isEditing; else editableCustomer">
+              <div><span class="label">Customer</span><strong>{{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</strong></div>
+              <div><span class="label">Phone</span><strong>{{ selectedOrder.phone || 'Not provided' }}</strong></div>
+              <div class="full-width"><span class="label">Address</span><strong>{{ selectedOrder.address || 'Not provided' }}</strong></div>
+            </ng-container>
+            <ng-template #editableCustomer>
+              <label><span class="label">First name</span><input [(ngModel)]="selectedOrder.firstName"></label>
+              <label><span class="label">Last name</span><input [(ngModel)]="selectedOrder.lastName"></label>
+              <label><span class="label">Phone</span><input [(ngModel)]="selectedOrder.phone"></label>
+              <label class="full-width"><span class="label">Address</span><input [(ngModel)]="selectedOrder.address"></label>
+            </ng-template>
           </div>
         </section>
 
@@ -99,8 +114,13 @@
           <div *ngIf="selectedOrder.orderItems.length" class="order-model-list">
             <div *ngFor="let item of selectedOrder.orderItems; let index = index" class="order-model-row">
               <span class="model-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
-              <div class="model-link-copy"><span>Model {{ index + 1 }}</span><input *ngIf="isEditing" [(ngModel)]="item.modelUrl" type="url" placeholder="https://example.com/model"><a *ngIf="!isEditing" [href]="item.modelUrl" target="_blank" rel="noreferrer">{{ item.modelUrl }}</a></div>
-              <label *ngIf="isEditing" class="model-edit-quantity">Qty<input [(ngModel)]="item.quantity" type="number" min="1"></label><span *ngIf="!isEditing" class="model-quantity">{{ item.quantity }} <small>pcs</small></span>
+              <div class="model-link-copy">
+                <span>Model {{ index + 1 }}</span>
+                <input *ngIf="isEditing" [(ngModel)]="item.modelUrl" type="text" placeholder="https://example.com/model">
+                <a *ngIf="!isEditing" [href]="item.modelUrl" target="_blank" rel="noreferrer">{{ item.modelUrl.startsWith('data:') ? 'Open uploaded file' : item.modelUrl }}</a>
+              </div>
+              <label *ngIf="isEditing" class="model-edit-quantity">Qty<input [(ngModel)]="item.quantity" type="number" min="1"></label>
+              <span *ngIf="!isEditing" class="model-quantity">{{ item.quantity }} <small>pcs</small></span>
               <button *ngIf="isEditing && selectedOrder.orderItems.length > 1" type="button" class="remove-line" (click)="removeOrderLine(index)" aria-label="Remove model">×</button>
             </div>
           </div>
@@ -109,19 +129,25 @@
 
         <section class="detail-section order-notes" aria-labelledby="notes-heading">
           <h3 id="notes-heading">Description</h3>
-          <textarea *ngIf="isEditing" [(ngModel)]="selectedOrder.description" rows="4"></textarea><p *ngIf="!isEditing">{{ selectedOrder.description || 'No description provided.' }}</p>
+          <textarea *ngIf="isEditing" [(ngModel)]="selectedOrder.description" rows="4" placeholder="Add notes about this order"></textarea>
+          <p *ngIf="!isEditing">{{ selectedOrder.description || 'No description provided.' }}</p>
         </section>
 
-        <section *ngIf="selectedOrder.imageData" class="detail-section image-detail-section" aria-labelledby="image-heading">
-          <div><h3 id="image-heading">Reference image</h3><p>Attached to this order</p></div>
-          <a class="order-image-detail" [href]="selectedOrder.imageData" target="_blank" rel="noreferrer" aria-label="Open full-size order reference image">
-            <img [src]="selectedOrder.imageData" alt="Order reference" />
-          </a>
+        <section *ngIf="selectedOrder.imageData.length" class="detail-section image-detail-section" aria-labelledby="image-heading">
+          <div><h3 id="image-heading">Reference images</h3><p>{{ selectedOrder.imageData.length }} attached</p></div>
+          <div class="order-image-gallery">
+            <a *ngFor="let image of selectedOrder.imageData; let index = index" class="order-image-detail" [href]="image" target="_blank" rel="noreferrer" [attr.aria-label]="'Open reference image ' + (index + 1)">
+              <img [src]="image" [alt]="'Order reference ' + (index + 1)" />
+            </a>
+          </div>
         </section>
 
-        <div class="edit-fields" *ngIf="isEditing"><label>Order date<input type="date" [(ngModel)]="selectedOrder.orderDate"></label><label>Total price<input type="number" min="0" step="0.01" [(ngModel)]="selectedOrder.price"></label></div>
+        <div class="edit-fields" *ngIf="isEditing">
+          <label><span class="label">Order date</span><input type="date" [(ngModel)]="selectedOrder.orderDate"></label>
+          <label><span class="label">Total price</span><input type="number" min="0" step="0.01" [(ngModel)]="selectedOrder.price"></label>
+        </div>
         <label class="status-editor">
-          <span>Update status</span>
+          <span class="label">Update status</span>
           <select [(ngModel)]="selectedOrder.status" [ngModelOptions]="{ standalone: true }">
             <option value="Pending">Pending</option>
             <option value="Ready">Ready</option>

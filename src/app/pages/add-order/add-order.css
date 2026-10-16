@@ -347,6 +347,51 @@
   font-weight: 700;
 }
 
+:host-context(html.dark-theme) .page-shell {
+  color: #edf3f5;
+}
+
+:host-context(html.dark-theme) .page-shell .field-row label,
+:host-context(html.dark-theme) .page-shell .model-line label {
+  color: #c2cdcf;
+}
+
+:host-context(html.dark-theme) .page-shell .section-heading h2,
+:host-context(html.dark-theme) .page-shell .model-section-heading strong,
+:host-context(html.dark-theme) .page-shell .attachment-heading strong,
+:host-context(html.dark-theme) .page-shell .card-header strong,
+:host-context(html.dark-theme) .page-shell .order-card .recent-customer {
+  color: #f0f4f4;
+}
+
+:host-context(html.dark-theme) .page-shell .section-heading p,
+:host-context(html.dark-theme) .page-shell .model-section-heading small,
+:host-context(html.dark-theme) .page-shell .attachment-heading small,
+:host-context(html.dark-theme) .page-shell .order-card p,
+:host-context(html.dark-theme) .page-shell .order-card small {
+  color: #b8c4c6;
+}
+
+:host-context(html.dark-theme) .page-shell .form-panel,
+:host-context(html.dark-theme) .page-shell .orders-panel {
+  background: #252a2e;
+  border-color: #414a4e;
+}
+
+:host-context(html.dark-theme) .page-shell .order-form input,
+:host-context(html.dark-theme) .page-shell .order-form textarea,
+:host-context(html.dark-theme) .page-shell .model-line input {
+  background: #1b1f22;
+  border-color: #566166;
+  color: #f0f4f4;
+}
+
+:host-context(html.dark-theme) .page-shell .model-line,
+:host-context(html.dark-theme) .page-shell .order-card {
+  background: #2b3033;
+  border-color: #454e52;
+}
+
 .add-model-btn {
   min-height: 33px;
   padding: 0 9px;
@@ -436,6 +481,8 @@
   align-items: flex-start;
 }
 
+.image-preview-list { display: flex; flex-wrap: wrap; gap: 10px; }
+
 .image-preview-row img {
   width: 112px;
   height: 88px;
@@ -444,6 +491,8 @@
   background: #f8faf9;
   object-fit: contain;
 }
+
+.model-file-input { height: auto !important; padding: 5px !important; font-size: 0.7rem !important; background: transparent !important; border: 0 !important; }
 
 .remove-image-btn {
   min-height: 32px;

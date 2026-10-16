@@ -60,8 +60,9 @@
         <div class="model-lines" formArrayName="orderLines">
           <div class="model-line" *ngFor="let line of orderLines.controls; let index = index" [formGroupName]="index">
             <label>
-              <span>Model link {{ index + 1 }}</span>
-              <input type="url" formControlName="modelUrl" placeholder="https://example.com/model" />
+              <span>Model link or file {{ index + 1 }}</span>
+              <input type="text" formControlName="modelUrl" placeholder="https://example.com/model" />
+              <input class="model-file-input" type="file" (change)="onModelFileSelected($event, index)" aria-label="Upload model file" />
             </label>
             <label class="model-quantity">
               <span>Quantity</span>
@@ -82,15 +83,17 @@
       </div>
 
       <section class="attachment-section">
-        <div class="attachment-heading"><strong>Reference image</strong><small>Optional · drag and drop, paste, or choose · up to 3 MB</small></div>
-        <input #imageFile id="order-image" class="image-file-input" type="file" accept="image/jpeg,image/png,image/webp" (change)="onImageSelected($event)" />
+        <div class="attachment-heading"><strong>Reference images</strong><small>Optional · add one or more JPG, PNG, or WebP images · up to 3 MB each</small></div>
+        <input #imageFile id="order-image" class="image-file-input" type="file" multiple accept="image/jpeg,image/png,image/webp" (change)="onImageSelected($event)" />
         <div class="image-dropzone" (dragover)="$event.preventDefault()" (drop)="onImageDrop($event)">
           <span>Drop or paste an image here</span>
           <button type="button" (click)="imageFile.click()">Choose image</button>
         </div>
-        <div *ngIf="orderForm.controls.imageData.value" class="image-preview-row">
-          <img [src]="orderForm.controls.imageData.value" alt="Order reference preview" />
-          <button class="remove-image-btn" type="button" (click)="removeImage(imageFile)">Remove image</button>
+        <div *ngIf="orderForm.controls.imageData.value.length" class="image-preview-list">
+          <div *ngFor="let image of orderForm.controls.imageData.value; let index = index" class="image-preview-row">
+            <img [src]="image" [alt]="'Order reference ' + (index + 1)" />
+            <button class="remove-image-btn" type="button" (click)="removeImageAt(index, imageFile)">Remove</button>
+          </div>
         </div>
       </section>
 

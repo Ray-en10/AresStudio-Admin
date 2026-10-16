@@ -15,7 +15,7 @@ export interface OrderRecord {
   orderDate: string;
   orderLink: string;
   orderItems: OrderLineRecord[];
-  imageData: string;
+  imageData: string[];
   status: string;
 }
 
@@ -37,6 +37,7 @@ interface ApiOrder {
   orderLink: string | null;
   items?: OrderLineRecord[] | null;
   imageData?: string | null;
+  imageDataList?: string[] | null;
   status: string;
 }
 
@@ -122,7 +123,7 @@ export class Orders {
       orderLink: order.orderLink ?? order.items?.[0]?.modelUrl ?? '',
       orderItems: order.items?.map((item) => ({ modelUrl: item.modelUrl, quantity: Number(item.quantity) })) ??
         (order.orderLink ? [{ modelUrl: order.orderLink, quantity: 1 }] : []),
-      imageData: order.imageData ?? '',
+      imageData: order.imageDataList?.length ? order.imageDataList : (order.imageData ? [order.imageData] : []),
       status: this.fromApiStatus(order.status),
     };
   }
@@ -139,7 +140,8 @@ export class Orders {
       orderDate: order.orderDate,
       orderLink: order.orderItems[0]?.modelUrl ?? order.orderLink,
       items: order.orderItems.map((item) => ({ modelUrl: item.modelUrl, quantity: item.quantity })),
-      imageData: order.imageData || null,
+      imageData: order.imageData[0] || null,
+      imageDataList: order.imageData.length ? order.imageData : null,
       status: this.toApiStatus(order.status),
     };
   }

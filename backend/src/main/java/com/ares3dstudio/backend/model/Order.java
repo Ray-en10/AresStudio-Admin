@@ -52,6 +52,12 @@ public class Order {
     @Column(name = "image_data", columnDefinition = "TEXT")
     private String imageData;
 
+    @ElementCollection
+    @CollectionTable(name = "order_images", joinColumns = @JoinColumn(name = "order_pk"))
+    @OrderColumn(name = "image_number")
+    @Column(name = "image_data", columnDefinition = "TEXT")
+    private List<String> imageDataList = new ArrayList<>();
+
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -152,6 +158,14 @@ public class Order {
 
     public void setImageData(String imageData) {
         this.imageData = imageData;
+    }
+
+    public List<String> getImageDataList() {
+        return imageDataList;
+    }
+
+    public void setImageDataList(List<String> imageDataList) {
+        this.imageDataList = imageDataList == null ? new ArrayList<>() : new ArrayList<>(imageDataList);
     }
 
     public BigDecimal getPrice() {
